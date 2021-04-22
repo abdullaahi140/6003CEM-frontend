@@ -32,7 +32,7 @@ class Page extends React.Component {
 	render() {
 		return (
 			<Pagination
-				defaultCurrent={1}
+				current={this.props.page} // defaultCurrent doesn't work hence the workaround
 				total={this.state.count}
 				defaultPageSize={12}
 				hideOnSinglePage={true}
@@ -46,6 +46,7 @@ class Page extends React.Component {
 Page.propTypes = {
 	name: PropTypes.string,
 	breed: PropTypes.string,
+	page: PropTypes.number,
 	resource: PropTypes.string,
 	onChange: PropTypes.func
 }
