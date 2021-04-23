@@ -1,0 +1,26 @@
+{
+  "env": {
+    "browser": true,
+    "commonjs": true,
+    "es2021": true
+  },
+  "extends": ["airbnb", "plugin:jest/recommended", "plugin:react/recommended"],
+  "settings": { "react": { "version": "detect" } },
+  "plugins": ["react", "jest"],
+  "parserOptions": {
+    "ecmaVersion": 12,
+    "sourceType": "module"
+  },
+  "rules": {
+    "indent": ["error", "tab"],
+    "no-tabs": ["error", { "allowIndentationTabs": true }],
+    "comma-dangle": ["error", "never"],
+    "no-unused-expressions": ["error", { "allowShortCircuit": true }],
+    "no-console": ["error", { "allow": ["warn", "error"] }],
+    "import/extensions": ["error", "ignorePackages"],
+    "react/jsx-filename-extension": 0,
+    "react/jsx-indent": [2, "tab", { "checkAttributes": true, "indentLogicalExpressions": true }],
+    "react/jsx-indent-props": [2, "tab"],
+    "react/jsx-props-no-spreading": 0
+  }
+}

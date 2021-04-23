@@ -1,8 +1,7 @@
 import React from 'react';
-import { Input, Select } from "antd";
-import PropTypes from "prop-types";
-import { json, status } from '../utilities/requestHandlers';
-
+import { Input, Select } from 'antd';
+import PropTypes from 'prop-types';
+import { json, status } from '../utilities/requestHandlers.js';
 
 class SearchBar extends React.Component {
 	constructor(props) {
@@ -14,43 +13,47 @@ class SearchBar extends React.Component {
 		fetch('http://localhost:3000/api/v1/dogs/breeds')
 			.then(status)
 			.then(json)
-			.then(data => {
+			.then((data) => {
 				this.setState({ breeds: data });
 			})
-			.catch(err => console.log(err, "Error fetching breeds"));
+			.catch((err) => console.error(err, 'Error fetching breeds'));
 	}
 
 	render() {
 		const { Search } = Input;
-		const { Option } = Select
-		const breedOptions = this.state.breeds.map((breed, index) => {
-			return (
-				<Option key={index} value={breed}>{breed}</Option>
-			)
-		});
-		const selectAfter = <Select
-			style={{ width: 140 }}
-			allowClear
-			placeholder="Filter by breed"
-			onChange={this.props.onSelect}
-
-		>
-			{breedOptions}
-		</Select>;
+		const { Option } = Select;
+		const { breeds } = this.state;
+		const { onSelect, onSearch } = this.props;
+		const breedOptions = breeds.map((breed, index) => (
+			// eslint-disable-next-line react/no-array-index-key
+			<Option key={index} value={breed}>{breed}</Option>
+		));
+		const selectAfter = (
+			<Select
+				style={{ width: 140 }}
+				allowClear
+				placeholder="Filter by breed"
+				onChange={onSelect}
+			>
+				{breedOptions}
+			</Select>
+		);
 		return (
-			<Search placeholder="Search dogs..."
+			<Search
+				placeholder="Search dogs..."
 				allowClear
 				size="large"
 				addonBefore={selectAfter}
 				enterButton="Search"
-				onSearch={this.props.onSearch} />
-		)
+				onSearch={onSearch}
+			/>
+		);
 	}
 }
 
 SearchBar.propTypes = {
-	onSearch: PropTypes.func,
-	onSelect: PropTypes.func
-}
+	onSearch: PropTypes.func.isRequired,
+	onSelect: PropTypes.func.isRequired
+};
 
 export default SearchBar;
