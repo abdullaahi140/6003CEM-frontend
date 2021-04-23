@@ -18,13 +18,13 @@ class App extends React.Component {
 
 				<Content>
 					<Switch>
-						<Route path='/' component={Home} />
+						<Route path="/" component={Home} />
 					</Switch>
 				</Content>
 
 				<Footer style={{ textAlign: 'center' }}>6003 CEM CW2</Footer>
 			</Router>
-		)
+		);
 	}
 }
 
