@@ -5,11 +5,8 @@
 export function status(response) {
 	if (response.status >= 200 && response.status < 300) {
 		return response;
-	} else {
-		return new Promise((resolve, reject) => {
-			return reject(response);
-		});
 	}
+	return new Promise((resolve, reject) => reject(response));
 }
 
 /**
@@ -18,8 +15,7 @@ export function status(response) {
  */
 export function json(response, image) {
 	if (image) {
-		return response.blob()
-	} else {
-		return response.json()
+		return response.blob();
 	}
+	return response.json();
 }
