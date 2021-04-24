@@ -35,8 +35,9 @@ class Home extends React.Component {
 		const { name, breed, page } = this.state;
 		return (
 			<div className="site-layout-content">
-				<div style={{ padding: '2% 20%', textAlign: 'center' }}>
+				<div style={{ padding: '0% 10% 1%', textAlign: 'center' }}>
 					<PageHeader
+						style={{ padding: '0% 0% 1%' }}
 						className="site-page-header"
 						title="Charity Dogs"
 						subTitle="Browse through the list and adopt a dog."

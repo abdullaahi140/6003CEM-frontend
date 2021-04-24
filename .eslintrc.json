@@ -17,10 +17,13 @@
     "comma-dangle": ["error", "never"],
     "no-unused-expressions": ["error", { "allowShortCircuit": true }],
     "no-console": ["error", { "allow": ["warn", "error"] }],
+    "no-unused-vars": ["error", { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_" }],
+    "class-methods-use-this": 0,
     "import/extensions": ["error", "ignorePackages"],
     "react/jsx-filename-extension": 0,
     "react/jsx-indent": [2, "tab", { "checkAttributes": true, "indentLogicalExpressions": true }],
     "react/jsx-indent-props": [2, "tab"],
-    "react/jsx-props-no-spreading": 0
+    "react/jsx-props-no-spreading": 0,
+    "react/forbid-prop-types": 0
   }
 }
