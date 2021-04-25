@@ -2,6 +2,8 @@ import React from 'react';
 import { Card } from 'antd';
 import PropTypes from 'prop-types';
 import { json, status } from '../utilities/requestHandlers.js';
+import UserContext from '../contexts/user.js';
+import FavIcon from './favicon.js';
 
 class DogCard extends React.Component {
 	constructor(props) {
@@ -24,27 +26,34 @@ class DogCard extends React.Component {
 
 	render() {
 		const { Meta } = Card;
+		const { loggedIn } = this.context;
 		const { image } = this.state;
 		const {
-			loading, ID, age, breed, name, locationName, description
+			ID, age, breed, name, locationName, loading
 		} = this.props;
+
+		const actions = [
+			<p key={ID}>
+				Age:
+				{age}
+			</p>,
+			<p key={ID}>
+				{breed}
+			</p>
+		];
+
+		if (loggedIn) {
+			actions.push(<FavIcon key={ID} dogID={ID} />);
+		}
+
 		return (
 			<Card
 				style={{ width: 320 }}
 				hoverable
 				loading={loading}
-				actions={[
-					<p key={ID}>
-						Age:
-						{age}
-					</p>,
-					<p key={ID}>
-						Breed:
-						{breed}
-					</p>
-				]}
+				actions={actions}
 				cover={
-					<img src={image} alt={description} style={{ width: '320px', height: '180px', objectFit: 'cover' }} />
+					<img src={image} alt="dog" style={{ width: '320px', height: '180px', objectFit: 'cover' }} />
 				}
 			>
 				<Meta title={name} description={`${locationName} Shelter`} />
@@ -53,6 +62,7 @@ class DogCard extends React.Component {
 	}
 }
 
+DogCard.contextType = UserContext;
 DogCard.propTypes = {
 	ID: PropTypes.number.isRequired,
 	name: PropTypes.string.isRequired,
@@ -60,8 +70,7 @@ DogCard.propTypes = {
 	breed: PropTypes.string.isRequired,
 	locationName: PropTypes.string.isRequired,
 	imageID: PropTypes.number.isRequired,
-	loading: PropTypes.bool.isRequired,
-	description: PropTypes.string.isRequired
+	loading: PropTypes.bool.isRequired
 };
 
 export default DogCard;

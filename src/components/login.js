@@ -41,9 +41,7 @@ class LoginForm extends React.Component {
 	}
 
 	handleGoogle() {
-		fetch('http://localhost:3000/api/v1/auth/google/callback', {
-			method: 'GET'
-		})
+		fetch('http://localhost:3000/api/v1/auth/google/callback')
 			.then(status)
 			.then(json)
 			.then((user) => {
