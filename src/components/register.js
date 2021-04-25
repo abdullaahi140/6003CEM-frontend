@@ -96,7 +96,7 @@ class RegistrationForm extends React.Component {
 				this.setState({ redirect: true });
 			})
 			.catch((err) => {
-				err.json()
+				json(err)
 					.then((data) => message.error(data.message));
 			});
 	}
