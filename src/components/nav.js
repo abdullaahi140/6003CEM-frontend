@@ -28,17 +28,17 @@ class Nav extends React.Component {
 		if (!loggedIn) {
 			loginNav = (
 				<>
-					<Menu.Item key="3" style={{ float: 'right' }}>
+					<Menu.Item key="4" style={{ float: 'right' }}>
 						<Link to="/register">Register</Link>
 					</Menu.Item>
-					<Menu.Item key="4" style={{ float: 'right' }}>
+					<Menu.Item key="5" style={{ float: 'right' }}>
 						<Link to="/login">Login</Link>
 					</Menu.Item>
 				</>
 			);
 		} else {
 			loginNav = (
-				<Menu.Item key="3" onClick={this.handleLogout} style={{ float: 'right' }}>
+				<Menu.Item key="5" onClick={this.handleLogout} style={{ float: 'right' }}>
 					<Link to="/">Logout</Link>
 				</Menu.Item>
 			);
@@ -50,7 +50,8 @@ class Nav extends React.Component {
 		return (
 			<Menu theme="dark" defaultSelectedKeys={['1']} mode="horizontal">
 				<Menu.Item key="1"><Link to="/">Home</Link></Menu.Item>
-				<Menu.Item key="2"><Link to="/favourite">Favourites</Link></Menu.Item>
+				<Menu.Item key="2"><Link to="/favourites">Favourites</Link></Menu.Item>
+				<Menu.Item key="3"><Link to="/chats">Contact a Shelter</Link></Menu.Item>
 				{ this.handleNav()}
 			</Menu>
 		);
