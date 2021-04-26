@@ -29,7 +29,6 @@ class Nav extends React.Component {
 
 		try {
 			if (user.user.role !== 'user') {
-				// eslint-disable-next-line no-console
 				dogNav = (
 					<Menu.Item key="4">
 						<Link to="/dog_form">Add a dog</Link>
