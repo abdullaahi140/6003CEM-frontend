@@ -34,7 +34,7 @@ class Home extends React.Component {
 
 	handleChange(page) {
 		this.setState({ page });
-		window.scrollTo(0, 0);
+		window.scrollTo({ top: 0, behavior: 'smooth' }); // scroll to top
 	}
 
 	handleSearch(value) {
