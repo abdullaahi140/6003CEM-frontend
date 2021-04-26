@@ -36,17 +36,14 @@ class FavIcon extends React.Component {
 		})
 			.then(status)
 			.then(json)
-			.then((data) => {
-				// eslint-disable-next-line no-console
-				console.log(data);
+			.then(() => {
 				if (method !== 'DELETE') {
 					this.setState({ favourite: true });
 				} else {
 					this.setState({ favourite: false });
 				}
 			})
-			.catch((err) => {
-				console.error(err);
+			.catch(() => {
 				if (method !== 'DELETE') {
 					this.setState({ favourite: false });
 				} else {
