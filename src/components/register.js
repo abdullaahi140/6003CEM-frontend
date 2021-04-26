@@ -10,6 +10,7 @@ import PropTypes from 'prop-types';
 
 import { status, json } from '../utilities/requestHandlers.js';
 import UserContext from '../contexts/user.js';
+import jsonToForm from '../utilities/jsonToForm.js';
 
 // add some layout to keep the form organised on different screen sizes
 const formItemLayout = {
@@ -68,25 +69,9 @@ class RegistrationForm extends React.Component {
 	}
 
 	onFinish(values) {
-		const { confirm: _confirm, upload, ...data } = values;
-		const form = new FormData();
-
-		Object.keys(data).forEach((key) => {
-			if (data[key]) {
-				form.append(key, data[key]);
-			}
-		});
-
-		if (upload) {
-			form.append('upload', upload.file);
-		}
-		this.postUser(form);
-	}
-
-	postUser(form) {
 		fetch('http://localhost:3000/api/v1/users', {
 			method: 'POST',
-			body: form
+			body: jsonToForm(values)
 		})
 			.then(status)
 			.then(json)
