@@ -9,10 +9,10 @@ import Image from './image.js';
 class MessageComment extends React.Component {
 	constructor(props) {
 		super(props);
-		this.handleConfirm = this.handleConfirm.bind(this);
+		this.handleDelete = this.handleDelete.bind(this);
 	}
 
-	handleConfirm() {
+	handleDelete() {
 		const { user } = this.context;
 		const { ID, updateParent } = this.props;
 		fetch(`http://localhost:3000/api/v1/messages/${ID}`, {
@@ -39,7 +39,7 @@ class MessageComment extends React.Component {
 				avatar={<Image ID={senderImageID} alt={senderName} />}
 				content={message}
 				datetime={new Date(Date.parse(dateCreated)).toLocaleString()}
-				actions={[<DeleteIcon handleConfirm={this.handleConfirm} key={ID} />]}
+				actions={[<DeleteIcon handleConfirm={this.handleDelete} key={ID} />]}
 			/>
 		);
 	}
