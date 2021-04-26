@@ -32,7 +32,7 @@ class DogCard extends React.Component {
 			.then(() => updateParent())
 			.catch((err) => {
 				console.error(err);
-				message.error('You can not delete this message');
+				message.error('You can not delete this dog');
 			});
 	}
 
@@ -57,7 +57,7 @@ class DogCard extends React.Component {
 			actions.push(<FavIcon key={ID} dogID={ID} />);
 		}
 
-		if (loggedIn && user.role !== 'user') {
+		if (loggedIn && user.user.role !== 'user') {
 			actions.push(
 				(hover) ? (
 					<EditFilled
@@ -82,11 +82,20 @@ class DogCard extends React.Component {
 				hoverable
 				loading={loading}
 				actions={actions}
-				cover={
-					<Image ID={imageID} alt="dog" style={{ width: '432px', height: '243px', objectFit: 'cover' }} />
-				}
+				cover={(
+					<Image
+						ID={imageID}
+						alt="dog"
+						style={{ width: '432px', height: '243px', objectFit: 'cover' }}
+						onClick={() => history.push(`/dog/${ID}`)}
+					/>
+				)}
 			>
-				<Card.Meta title={name} description={`${locationName} Shelter`} />
+				<Card.Meta
+					title={name}
+					description={`${locationName} Shelter`}
+					onClick={() => history.push(`/dog/${ID}`)}
+				/>
 			</Card>
 		);
 	}
