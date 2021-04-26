@@ -73,7 +73,7 @@ class Home extends React.Component {
 					/>
 					<SearchBar onSearch={this.handleSearch} onSelect={this.handleSelect} />
 				</div>
-				<DogGrid dogs={dogs} loading={loading} />
+				<DogGrid dogs={dogs} loading={loading} updateParent={this.fetchDogs} />
 				<div style={{ display: 'flex', justifyContent: 'center' }}>
 					<Page
 						resource="dogs"
