@@ -8,6 +8,8 @@ import Home from './components/home.js';
 import Register from './components/register.js';
 import Login from './components/login.js';
 import Favourite from './components/fav.js';
+import Chat from './components/chat.js';
+import Message from './components/message.js';
 
 import PrivateRoute from './HoC/private.js';
 import UserContext from './contexts/user.js';
@@ -51,7 +53,9 @@ class App extends React.Component {
 							<Switch>
 								<Route path="/register" component={Register} />
 								<Route path="/login" component={Login} />
-								<PrivateRoute path="/favourite" component={Favourite} loggedIn={context.loggedIn} />
+								<PrivateRoute path="/favourites" component={Favourite} />
+								<PrivateRoute path="/chats" component={Chat} />
+								<PrivateRoute path="/messages/:chatID" component={Message} />
 								<Route exact path="/" component={Home} />
 							</Switch>
 						</Content>
@@ -64,3 +68,7 @@ class App extends React.Component {
 }
 
 export default App;
+
+// TODO: Messaging
+// TODO: Account page
+// TODO: Staff add and remove dogs
