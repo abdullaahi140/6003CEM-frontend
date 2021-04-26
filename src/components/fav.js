@@ -23,9 +23,7 @@ class Favourite extends React.Component {
 		})
 			.then(status)
 			.then(json)
-			.then((data) => {
-				this.setState({ dogs: data, loading: false });
-			})
+			.then((data) => this.setState({ dogs: data, loading: false }))
 			.catch((err) => {
 				this.setState({ dogs: [] });
 				console.error(err, 'Error fetching dogs');
