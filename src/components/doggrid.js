@@ -6,7 +6,7 @@ import DogCard from './dogcard.js';
 function DogGrid(props) {
 	const { dogs, loading } = props;
 	const cardList = dogs.map((dog) => (
-		<div style={{ padding: '1em' }} key={dog.ID}>
+		<div style={{ padding: '1rem' }} key={dog.ID}>
 			<Col span={6}>
 				<DogCard {...dog} loading={loading} />
 			</Col>
