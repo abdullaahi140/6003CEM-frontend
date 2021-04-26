@@ -1,9 +1,12 @@
 import React from 'react';
+import { withRouter } from 'react-router-dom';
+
 import {
 	Button, Input, List, PageHeader, Form
 } from 'antd';
-import { withRouter } from 'react-router-dom';
+import { SendOutlined } from '@ant-design/icons';
 import PropTypes from 'prop-types';
+
 import Comment from './comment.js';
 import UserContext from '../contexts/user.js';
 import { json, status } from '../utilities/requestHandlers.js';
@@ -128,6 +131,7 @@ class Message extends React.Component {
 						<Button
 							type="primary"
 							htmlType="submit"
+							icon={<SendOutlined />}
 							disabled={(shelterName === '')}
 						>
 							Send Message
