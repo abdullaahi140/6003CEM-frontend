@@ -33,10 +33,11 @@ Image.propTypes = {
 	ID: PropTypes.number.isRequired,
 	alt: PropTypes.string.isRequired,
 	style: PropTypes.object,
-	onClick: PropTypes.func.isRequired
+	onClick: PropTypes.func
 };
 Image.defaultProps = {
-	style: {}
+	style: {},
+	onClick: (() => null)
 };
 
 export default Image;
