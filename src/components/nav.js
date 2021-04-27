@@ -23,15 +23,34 @@ class Nav extends React.Component {
 	}
 
 	handleNav() {
-		const { loggedIn } = this.context;
+		const { loggedIn, user } = this.context;
+		let dogNav;
 		let loginNav;
+
+		try {
+			if (user.user.role !== 'user') {
+				// eslint-disable-next-line no-console
+				dogNav = (
+					<Menu.Item key="4">
+						<Link to="/dog_form">Add a dog</Link>
+					</Menu.Item>
+				);
+			}
+		} catch (err) {
+			if (err instanceof TypeError) {
+				// pass;
+			} else {
+				throw err;
+			}
+		}
+
 		if (!loggedIn) {
 			loginNav = (
 				<>
-					<Menu.Item key="4" style={{ float: 'right' }}>
+					<Menu.Item key="5" style={{ float: 'right' }}>
 						<Link to="/register">Register</Link>
 					</Menu.Item>
-					<Menu.Item key="5" style={{ float: 'right' }}>
+					<Menu.Item key="6" style={{ float: 'right' }}>
 						<Link to="/login">Login</Link>
 					</Menu.Item>
 				</>
@@ -43,7 +62,7 @@ class Nav extends React.Component {
 				</Menu.Item>
 			);
 		}
-		return loginNav;
+		return [dogNav, loginNav];
 	}
 
 	render() {

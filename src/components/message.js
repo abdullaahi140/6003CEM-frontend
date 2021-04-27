@@ -1,9 +1,12 @@
 import React from 'react';
+import { withRouter } from 'react-router-dom';
+
 import {
 	Button, Input, List, PageHeader, Form
 } from 'antd';
-import { withRouter } from 'react-router-dom';
+import { SendOutlined } from '@ant-design/icons';
 import PropTypes from 'prop-types';
+
 import Comment from './comment.js';
 import UserContext from '../contexts/user.js';
 import { json, status } from '../utilities/requestHandlers.js';
@@ -62,6 +65,7 @@ class Message extends React.Component {
 			.then(() => {
 				this.setState({ value: '' });
 				this.fetchMessages();
+				window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' }); // scroll to bottom
 			})
 			.catch((err) => {
 				json(err)
@@ -113,17 +117,25 @@ class Message extends React.Component {
 					)}
 				/>
 
-				<Form onFinish={this.handleSubmit}>
+				<Form className="blur-form" style={{ position: 'sticky', bottom: '0.5rem' }} onFinish={this.handleSubmit}>
 					<Form.Item>
 						<Input.TextArea
 							name="message"
+							disabled={(shelterName === '')}
 							rows={4}
 							value={value}
 							onChange={this.handleChange}
 						/>
 					</Form.Item>
 					<Form.Item>
-						<Button type="primary" htmlType="submit">Send Message</Button>
+						<Button
+							type="primary"
+							htmlType="submit"
+							icon={<SendOutlined />}
+							disabled={(shelterName === '')}
+						>
+							Send Message
+						</Button>
 					</Form.Item>
 				</Form>
 			</div>

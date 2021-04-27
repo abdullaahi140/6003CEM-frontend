@@ -10,10 +10,10 @@ import UserContext from '../contexts/user.js';
 class ChatCard extends React.Component {
 	constructor(props) {
 		super(props);
-		this.handleConfirm = this.handleConfirm.bind(this);
+		this.handleDelete = this.handleDelete.bind(this);
 	}
 
-	handleConfirm() {
+	handleDelete() {
 		const { user } = this.context;
 		const { chatID, updateParent } = this.props;
 		fetch(`http://localhost:3000/api/v1/chats/${chatID}`, {
@@ -37,7 +37,7 @@ class ChatCard extends React.Component {
 				size="small"
 				chatID={chatID}
 				title={<Link style={{ color: 'black' }} to={`/messages/${chatID}`}>{title}</Link>}
-				extra={<DeleteIcon handleConfirm={this.handleConfirm} />}
+				extra={<DeleteIcon handleConfirm={this.handleDelete} />}
 			>
 				<Link to={`/messages/${chatID}`}>{`Created: ${dateCreated}`}</Link>
 			</Card>

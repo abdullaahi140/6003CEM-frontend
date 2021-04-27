@@ -10,6 +10,7 @@ import Login from './components/login.js';
 import Favourite from './components/fav.js';
 import Chat from './components/chat.js';
 import Message from './components/message.js';
+import DogForm from './components/dogform.js';
 
 import PrivateRoute from './HoC/private.js';
 import UserContext from './contexts/user.js';
@@ -56,6 +57,8 @@ class App extends React.Component {
 								<PrivateRoute path="/favourites" component={Favourite} />
 								<PrivateRoute path="/chats" component={Chat} />
 								<PrivateRoute path="/messages/:chatID" component={Message} />
+								<PrivateRoute path="/dog_form/:dogID" component={DogForm} />
+								<PrivateRoute path="/dog_form" component={DogForm} />
 								<Route exact path="/" component={Home} />
 							</Switch>
 						</Content>
@@ -69,6 +72,5 @@ class App extends React.Component {
 
 export default App;
 
-// TODO: Messaging
 // TODO: Account page
 // TODO: Staff add and remove dogs
