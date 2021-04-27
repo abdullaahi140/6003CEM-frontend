@@ -1,5 +1,7 @@
 import React from 'react';
+import { withRouter } from 'react-router-dom';
 import { PageHeader } from 'antd';
+import PropTypes from 'prop-types';
 
 import DogGrid from './doggrid.js';
 import Page from './pagination.js';
@@ -10,10 +12,12 @@ import { json, status } from '../utilities/requestHandlers.js';
 class Home extends React.Component {
 	constructor(props) {
 		super(props);
+		const { match } = this.props;
+		const { page } = (match.params && match.params.page > 1) ? match.params : { page: 1 };
 		this.state = {
 			dogs: [],
 			loading: true,
-			page: 1,
+			page,
 			name: '',
 			breed: ''
 		};
@@ -33,8 +37,10 @@ class Home extends React.Component {
 	}
 
 	handleChange(page) {
+		const { history } = this.props;
 		this.setState({ page });
 		window.scrollTo({ top: 0, behavior: 'smooth' }); // scroll to top
+		history.push(`/${page}`);
 	}
 
 	handleSearch(value) {
@@ -88,4 +94,9 @@ class Home extends React.Component {
 	}
 }
 
-export default Home;
+Home.propTypes = {
+	match: PropTypes.object.isRequired,
+	history: PropTypes.object.isRequired
+};
+
+export default withRouter(Home);

@@ -21,9 +21,10 @@ class Image extends React.Component {
 
 	render() {
 		const { image } = this.state;
-		const { alt, style } = this.props;
+		const { alt, style, onClick } = this.props;
 		return (
-			<img src={image} alt={alt} style={style} />
+			// eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
+			<img src={image} alt={alt} style={style} onClick={onClick} onKeyPress={onClick} />
 		);
 	}
 }
@@ -31,10 +32,12 @@ class Image extends React.Component {
 Image.propTypes = {
 	ID: PropTypes.number.isRequired,
 	alt: PropTypes.string.isRequired,
-	style: PropTypes.object
+	style: PropTypes.object,
+	onClick: PropTypes.func
 };
 Image.defaultProps = {
-	style: {}
+	style: {},
+	onClick: (() => null)
 };
 
 export default Image;
