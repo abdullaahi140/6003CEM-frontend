@@ -19,5 +19,3 @@ export function json(response, image) {
 	}
 	return response.json();
 }
-
-// TODO: Handle access token refreshing

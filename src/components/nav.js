@@ -3,6 +3,10 @@ import { Menu } from 'antd';
 import { Link } from 'react-router-dom';
 import UserContext from '../contexts/user.js';
 
+/**
+ * Nav component that conditionally renders links depending on authentication
+ * state and user role.
+ */
 class Nav extends React.Component {
 	constructor(props) {
 		super(props);
@@ -10,18 +14,26 @@ class Nav extends React.Component {
 		this.handleNav = this.handleNav.bind(this);
 	}
 
+	/**
+	 * Post request to API when user logs out
+	 */
 	handleLogout() {
 		const { user, logout } = this.context;
 		fetch('http://localhost:3000/api/v1/auth/logout', {
 			method: 'POST',
 			headers: {
-				Authorization: `Bearer ${user.accessToken}`
+				Authorization: `Bearer ${user.accessToken.token}`
 			}
 		})
 			.catch((err) => console.error(err));
 		logout();
 	}
 
+	/**
+	 * Function that adds links to the nav depending on authentication state
+	 * and user role.
+	 * @returns {Menu.Item} - The links to render in the nav bar
+	 */
 	handleNav() {
 		const { loggedIn, user } = this.context;
 		let dogNav;

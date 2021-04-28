@@ -9,6 +9,9 @@ import SearchBar from './search.js';
 
 import { json, status } from '../utilities/requestHandlers.js';
 
+/**
+ * Home page component with list of paginated dogs and search
+ */
 class Home extends React.Component {
 	constructor(props) {
 		super(props);
@@ -27,15 +30,18 @@ class Home extends React.Component {
 		this.fetchDogs = this.fetchDogs.bind(this);
 	}
 
+	/** Fetch dogs on initial render */
 	componentDidMount() {
 		this.fetchDogs();
 	}
 
+	/** Updates list of dogs depending if search terms or page has changed */
 	componentDidUpdate() {
 		const { page, name, breed } = this.state;
 		this.fetchDogs(page, name, breed);
 	}
 
+	/** Handles page change and dictates page number to Pagination component */
 	handleChange(page) {
 		const { history } = this.props;
 		this.setState({ page });
@@ -43,14 +49,22 @@ class Home extends React.Component {
 		history.push(`/${page}`);
 	}
 
+	/** Sets search state depending on value in search */
 	handleSearch(value) {
 		this.setState({ name: value });
 	}
 
+	/** Sets breed value depending on value in Select component */
 	handleSelect(value) {
 		this.setState({ breed: value });
 	}
 
+	/**
+	 * Fetches dogs matching search terms
+	 * @param {number} page - The current page
+	 * @param {number} name - The name of the dog
+	 * @param {number} breed - The breed of the dog
+	 */
 	fetchDogs(page = 1, name = '', breed = '') {
 		fetch(`http://localhost:3000/api/v1/dogs?page=${page}&name=${name}&breed=${breed}`)
 			.then(status)
@@ -82,7 +96,6 @@ class Home extends React.Component {
 				<DogGrid dogs={dogs} loading={loading} updateParent={this.fetchDogs} />
 				<div style={{ display: 'flex', justifyContent: 'center' }}>
 					<Page
-						resource="dogs"
 						onChange={this.handleChange}
 						name={name}
 						breed={breed}
@@ -95,7 +108,9 @@ class Home extends React.Component {
 }
 
 Home.propTypes = {
+	/** Object containing info on the URL including parameters */
 	match: PropTypes.object.isRequired,
+	/** Object containing the history of URLs for the app */
 	history: PropTypes.object.isRequired
 };
 

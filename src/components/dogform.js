@@ -8,6 +8,9 @@ import UserContext from '../contexts/user.js';
 import { json, status } from '../utilities/requestHandlers.js';
 import jsonToForm from '../utilities/jsonToForm.js';
 
+/**
+ * Form component to add a new dog to a staff's shelter
+ */
 class DogForm extends React.Component {
 	constructor(props) {
 		super(props);
@@ -35,6 +38,10 @@ class DogForm extends React.Component {
 		this.fetchBreedList();
 	}
 
+	/**
+	 * Function that fetches an example image of a particular breed of dog
+	 * @param {string} value - The breed of dog
+	 */
 	handleSelect(value) {
 		this.setState({ breed: value });
 		let breed = value.split(' ').reverse();
@@ -47,6 +54,10 @@ class DogForm extends React.Component {
 			.catch((err) => console.error(err));
 	}
 
+	/**
+	 * Post the form to either add or update a dog.
+	 * @param {Object} values - Values for field in the submitted form
+	 */
 	handleSubmit(values) {
 		const { user } = this.context;
 		const { dogID, method } = this.state;
@@ -55,7 +66,7 @@ class DogForm extends React.Component {
 		fetch(url, {
 			method,
 			headers: {
-				Authorization: `Bearer ${user.accessToken}`
+				Authorization: `Bearer ${user.accessToken.token}`
 			},
 			body: jsonToForm(values)
 		})
@@ -67,6 +78,9 @@ class DogForm extends React.Component {
 			});
 	}
 
+	/**
+	 * Fetch a dog to populate their details in the form.
+	 */
 	fetchDog() {
 		const { dogID } = this.state;
 		if (!dogID) return; // prevent fetching dog if no dogID
@@ -77,11 +91,14 @@ class DogForm extends React.Component {
 			.catch((err) => console.error(err));
 	}
 
+	/**
+	 * Fetches the staff's shelter name to set as the header.
+	 */
 	fetchShelterName() {
 		const { user } = this.context;
 		fetch(`http://localhost:3000/api/v1/locations/${user.user.locationID}`, {
 			headers: {
-				Authorization: `Bearer ${user.accessToken}`
+				Authorization: `Bearer ${user.accessToken.token}`
 			}
 		})
 			.then(status)
@@ -90,6 +107,9 @@ class DogForm extends React.Component {
 			.catch((err) => console.error(err));
 	}
 
+	/**
+	 * Fetches a list of breeds from the Dog API
+	 */
 	fetchBreedList() {
 		fetch('https://dog.ceo/api/breeds/list/all')
 			.then(status)
@@ -98,6 +118,11 @@ class DogForm extends React.Component {
 			.catch((err) => console.error(err));
 	}
 
+	/**
+	 * Capitilises the first letter of a string only
+	 * @param {string} string - The string to be capitilised
+	 * @returns A string with the 1st letter capitilised
+	 */
 	capitalise(string) {
 		return string.charAt(0).toUpperCase() + string.slice(1);
 	}
@@ -234,8 +259,10 @@ class DogForm extends React.Component {
 
 DogForm.contextType = UserContext;
 DogForm.propTypes = {
-	history: PropTypes.object.isRequired,
-	match: PropTypes.object.isRequired
+	/** Object containing info on the URL including parameters */
+	match: PropTypes.object.isRequired,
+	/** Object containing the history of URLs for the app */
+	history: PropTypes.object.isRequired
 };
 
 export default DogForm;

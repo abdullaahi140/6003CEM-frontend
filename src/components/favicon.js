@@ -4,6 +4,9 @@ import { HeartOutlined, HeartFilled } from '@ant-design/icons';
 import UserContext from '../contexts/user.js';
 import { json, status } from '../utilities/requestHandlers.js';
 
+/**
+ * Icon component handling favouriting dogs
+ */
 class FavIcon extends React.Component {
 	constructor(props) {
 		super(props);
@@ -16,6 +19,9 @@ class FavIcon extends React.Component {
 		this.fetchFav('GET');
 	}
 
+	/**
+	 * Set fetch method depending on the state of the icon when clicked
+	 * */
 	handleClick() {
 		const { favourite } = this.state;
 		if (favourite) {
@@ -25,13 +31,17 @@ class FavIcon extends React.Component {
 		}
 	}
 
+	/**
+	 * Function that adds or remove favourite for dog
+	 * @param {string} method - HTTP method for request (POST, DELETE e.g.)
+	 */
 	fetchFav(method) {
 		const { user } = this.context;
 		const { dogID } = this.props;
 		fetch(`http://localhost:3000/api/v1/dogs/favs/${dogID}`, {
 			method,
 			headers: {
-				Authorization: `Bearer ${user.accessToken}`
+				Authorization: `Bearer ${user.accessToken.token}`
 			}
 		})
 			.then(status)
@@ -71,6 +81,7 @@ class FavIcon extends React.Component {
 
 FavIcon.contextType = UserContext;
 FavIcon.propTypes = {
+	/** Dog ID */
 	dogID: PropTypes.number.isRequired
 };
 

@@ -9,10 +9,10 @@ import { UploadOutlined } from '@ant-design/icons';
 import PropTypes from 'prop-types';
 
 import { status, json } from '../utilities/requestHandlers.js';
-import UserContext from '../contexts/user.js';
 import jsonToForm from '../utilities/jsonToForm.js';
+import UserContext from '../contexts/user.js';
 
-// add some layout to keep the form organised on different screen sizes
+// setting up responsive layout
 const formItemLayout = {
 	labelCol: { xs: { span: 24 }, sm: { span: 6 } },
 	wrapperCol: { xs: { span: 24 }, sm: { span: 12 } }
@@ -47,7 +47,11 @@ const staffCodeRules = [
 
 const confirmRules = [
 	{ required: true, message: 'Please confirm your password!' },
-	// rules can include function handlers in which you can apply additional logic
+	/**
+	 * Validator that checks if the password and confirm password field matches
+	 * @param {} - Function that gets a field from a form using the value prop
+	 * @returns Promise that rejects or resolves if the password fields match
+	 */
 	({ getFieldValue }) => ({
 		validator(_rule, value) {
 			if (!value || getFieldValue('password') === value) {
@@ -68,6 +72,10 @@ class RegistrationForm extends React.Component {
 		this.onFinish = this.onFinish.bind(this);
 	}
 
+	/**
+	 * Sumbit handler that posts the form response to the API
+	 * @param {Object} values - Object containing all the values entered in the form
+	 */
 	onFinish(values) {
 		fetch('http://localhost:3000/api/v1/users', {
 			method: 'POST',
@@ -75,14 +83,30 @@ class RegistrationForm extends React.Component {
 		})
 			.then(status)
 			.then(json)
+			.then((data) => this.login(data))
+			.catch((err) => {
+				json(err)
+					.then((data) => message.error(data.message));
+			});
+	}
+
+	/**
+	 * Authenticates the new user after registering
+	 * @param {object} registeredUser - The user object
+	 */
+	login(registeredUser) {
+		fetch('http://localhost:3000/api/v1/auth/login', {
+			method: 'POST',
+			headers: {
+				Authorization: `Bearer ${registeredUser.accessToken.token}`
+			}
+		})
+			.then(status)
+			.then(json)
 			.then((user) => {
 				const { login } = this.context;
 				login(user);
 				this.setState({ redirect: true });
-			})
-			.catch((err) => {
-				json(err)
-					.then((data) => message.error(data.message));
 			});
 	}
 
@@ -149,7 +173,9 @@ class RegistrationForm extends React.Component {
 
 RegistrationForm.contextType = UserContext;
 RegistrationForm.propTypes = {
+	/** Object containing info on the past, present and future location of the app  */
 	location: PropTypes.object.isRequired,
+	/** Object containing the history of URLs for the app */
 	history: PropTypes.object.isRequired
 };
 

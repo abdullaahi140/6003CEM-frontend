@@ -11,6 +11,9 @@ import Comment from './comment.js';
 import UserContext from '../contexts/user.js';
 import { json, status } from '../utilities/requestHandlers.js';
 
+/**
+ * Component that displays a list of current messages and a form to send new messages.
+ */
 class Message extends React.Component {
 	constructor(props) {
 		super(props);
@@ -26,12 +29,15 @@ class Message extends React.Component {
 		this.fetchMessages = this.fetchMessages.bind(this);
 	}
 
+	/**
+	 * Get request to retrieve all messages for the current chat.
+	 */
 	componentDidMount() {
 		const { user } = this.context;
 		const { chatID } = this.state;
 		fetch(`http://localhost:3000/api/v1/chats/${chatID}`, {
 			headers: {
-				Authorization: `Bearer ${user.accessToken}`
+				Authorization: `Bearer ${user.accessToken.token}`
 			}
 		})
 			.then(status)
@@ -39,12 +45,26 @@ class Message extends React.Component {
 			.then((data) => this.setState({ shelterName: data.locationName }))
 			.catch((err) => console.error(err));
 		this.fetchMessages();
+		setInterval(this.fetchMessages, 1000); // refresh messages every second
 	}
 
+	/**
+	 * Stop fetching messages when the component is not in view
+	 */
+	componentWillUnmount() {
+		clearInterval(this.fetchMessages);
+	}
+
+	/**
+	 * Update state when the text area is populated with text.
+	 */
 	handleChange(event) {
 		this.setState({ value: event.target.value });
 	}
 
+	/**
+	 * Submits the form if a message is provided for the current chat.
+	 */
 	handleSubmit() {
 		const { user } = this.context;
 		const { chatID, value } = this.state;
@@ -57,7 +77,7 @@ class Message extends React.Component {
 			body: JSON.stringify({ message: value }),
 			headers: {
 				'Content-Type': 'application/json',
-				Authorization: `Bearer ${user.accessToken}`
+				Authorization: `Bearer ${user.accessToken.token}`
 			}
 		})
 			.then(status)
@@ -73,12 +93,15 @@ class Message extends React.Component {
 			});
 	}
 
+	/**
+	 * Fetch messages for the current chat.
+	 */
 	fetchMessages() {
 		const { user } = this.context;
 		const { chatID } = this.state;
 		fetch(`http://localhost:3000/api/v1/messages/${chatID}`, {
 			headers: {
-				Authorization: `Bearer ${user.accessToken}`
+				Authorization: `Bearer ${user.accessToken.token}`
 			}
 		})
 			.then(status)
@@ -145,7 +168,9 @@ class Message extends React.Component {
 
 Message.contextType = UserContext;
 Message.propTypes = {
+	/** Object containing info on the URL including parameters */
 	match: PropTypes.object.isRequired,
+	/** Object containing the history of URLs for the app */
 	history: PropTypes.object.isRequired
 };
 

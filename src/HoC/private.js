@@ -3,6 +3,12 @@ import PropTypes from 'prop-types';
 import { Redirect, Route } from 'react-router-dom';
 import UserContext from '../contexts/user.js';
 
+/**
+ * Protects a route by checking the authenticated state before rendering a component
+ * @param {React.Component} Component - The component that is being protected
+ * @param {Object} rest - The component's props
+ * @returns {Route} - A Route object that renders inline the component that was being protected
+ */
 function ProtectedRoute({ component: Component, ...rest }) {
 	const context = useContext(UserContext);
 	return (
@@ -18,7 +24,9 @@ function ProtectedRoute({ component: Component, ...rest }) {
 }
 
 ProtectedRoute.propTypes = {
+	/** The component that is being protected */
 	component: PropTypes.elementType.isRequired,
+	/** Object containing info on the past, present and future location of the app  */
 	location: PropTypes.object.isRequired
 };
 
