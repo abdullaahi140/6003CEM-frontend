@@ -1,1 +1,5 @@
 @import '~antd/dist/antd.css';
+
+.blur-form{
+	backdrop-filter: blur(10px);
+}
