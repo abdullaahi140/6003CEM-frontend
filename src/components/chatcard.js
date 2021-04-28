@@ -22,7 +22,7 @@ class ChatCard extends React.Component {
 	handleDelete() {
 		const { user } = this.context;
 		const { chatID, updateParent } = this.props;
-		fetch(`http://localhost:3000/api/v1/chats/${chatID}`, {
+		fetch(`https://source-modem-3000.codio-box.uk/api/v1/chats/${chatID}`, {
 			method: 'DELETE',
 			headers: {
 				Authorization: `Bearer ${user.accessToken.token}`

@@ -35,7 +35,7 @@ class Message extends React.Component {
 	componentDidMount() {
 		const { user } = this.context;
 		const { chatID } = this.state;
-		fetch(`http://localhost:3000/api/v1/chats/${chatID}`, {
+		fetch(`https://source-modem-3000.codio-box.uk/api/v1/chats/${chatID}`, {
 			headers: {
 				Authorization: `Bearer ${user.accessToken.token}`
 			}
@@ -72,7 +72,7 @@ class Message extends React.Component {
 			return; // don't post if text area is empty
 		}
 
-		fetch(`http://localhost:3000/api/v1/messages/${chatID}`, {
+		fetch(`https://source-modem-3000.codio-box.uk/api/v1/messages/${chatID}`, {
 			method: 'POST',
 			body: JSON.stringify({ message: value }),
 			headers: {
@@ -99,7 +99,7 @@ class Message extends React.Component {
 	fetchMessages() {
 		const { user } = this.context;
 		const { chatID } = this.state;
-		fetch(`http://localhost:3000/api/v1/messages/${chatID}`, {
+		fetch(`https://source-modem-3000.codio-box.uk/api/v1/messages/${chatID}`, {
 			headers: {
 				Authorization: `Bearer ${user.accessToken.token}`
 			}

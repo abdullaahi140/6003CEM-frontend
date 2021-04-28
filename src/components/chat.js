@@ -32,7 +32,7 @@ class Chat extends React.Component {
 	handleConfirm(values) {
 		const { user } = this.context;
 		const { history } = this.props;
-		fetch(`http://localhost:3000/api/v1/chats/${values.shelter}`, {
+		fetch(`https://source-modem-3000.codio-box.uk/api/v1/chats/${values.shelter}`, {
 			method: 'POST',
 			headers: {
 				Authorization: `Bearer ${user.accessToken.token}`
@@ -53,7 +53,7 @@ class Chat extends React.Component {
 	fetchChats() {
 		const { user } = this.context;
 		const { role, locationID } = user.user;
-		let url = 'http://localhost:3000/api/v1/chats';
+		let url = 'https://source-modem-3000.codio-box.uk/api/v1/chats';
 		if (role !== 'user') {
 			url = `${url}/location/${locationID}`;
 		}
@@ -77,7 +77,7 @@ class Chat extends React.Component {
 	 */
 	fetchShelters() {
 		const { user } = this.context;
-		fetch('http://localhost:3000/api/v1/locations', {
+		fetch('https://source-modem-3000.codio-box.uk/api/v1/locations', {
 			headers: {
 				Authorization: `Bearer ${user.accessToken.token}`
 			}

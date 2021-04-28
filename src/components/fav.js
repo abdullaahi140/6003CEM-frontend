@@ -22,7 +22,7 @@ class Favourite extends React.Component {
 	 */
 	componentDidMount() {
 		const { user } = this.context;
-		fetch('http://localhost:3000/api/v1/dogs/favs', {
+		fetch('https://source-modem-3000.codio-box.uk/api/v1/dogs/favs', {
 			headers: {
 				Authorization: `Bearer ${user.accessToken.token}`
 			}

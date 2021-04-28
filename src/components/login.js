@@ -44,7 +44,7 @@ class LoginForm extends React.Component {
 	 * Function that fetch Google auth
 	 */
 	handleGoogle() {
-		fetch('http://localhost:3000/api/v1/auth/google/callback')
+		fetch('https://source-modem-3000.codio-box.uk/api/v1/auth/google/callback')
 			.then(status)
 			.then(json)
 			.then((user) => {
@@ -64,7 +64,7 @@ class LoginForm extends React.Component {
 	 * */
 	login(values) {
 		const { username, password } = values;
-		fetch('http://localhost:3000/api/v1/auth/login', {
+		fetch('https://source-modem-3000.codio-box.uk/api/v1/auth/login', {
 			method: 'POST',
 			headers: {
 				Authorization: `Basic ${btoa(`${username}:${password}`)}`
@@ -102,7 +102,7 @@ class LoginForm extends React.Component {
 				<Form.Item {...tailFormItemLayout}>
 					<Button style={{ marginBottom: '1rem' }} type="primary" htmlType="submit">Login</Button>
 					<OauthPopup
-						url="http://localhost:3000/api/v1/auth/google/callback"
+						url="https://source-modem-3000.codio-box.uk/api/v1/auth/google/callback"
 						onCode={(code, params) => {
 							// eslint-disable-next-line no-console
 							console.log(code);

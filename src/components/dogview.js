@@ -22,7 +22,7 @@ class DogView extends React.PureComponent {
 	componentDidMount() {
 		const { match } = this.props;
 		const { dogID } = match.params;
-		fetch(`http://localhost:3000/api/v1/dogs/${dogID}`)
+		fetch(`https://source-modem-3000.codio-box.uk/api/v1/dogs/${dogID}`)
 			.then(status)
 			.then(json)
 			.then((data) => this.setState({ dog: data, imageID: data.imageID }))

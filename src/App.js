@@ -86,7 +86,7 @@ class App extends React.Component {
 	fetchRefresh() {
 		const { cookies } = this.props;
 		const { user } = this.state;
-		fetch(`http://localhost:3000/api/v1/auth/refresh/${user.user.ID}`)
+		fetch(`https://source-modem-3000.codio-box.uk/api/v1/auth/refresh/${user.user.ID}`)
 			.then(status)
 			.then(json)
 			.then((data) => {

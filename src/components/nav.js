@@ -19,7 +19,7 @@ class Nav extends React.Component {
 	 */
 	handleLogout() {
 		const { user, logout } = this.context;
-		fetch('http://localhost:3000/api/v1/auth/logout', {
+		fetch('https://source-modem-3000.codio-box.uk/api/v1/auth/logout', {
 			method: 'POST',
 			headers: {
 				Authorization: `Bearer ${user.accessToken.token}`

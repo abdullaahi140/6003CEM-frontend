@@ -66,7 +66,7 @@ class Home extends React.Component {
 	 * @param {number} breed - The breed of the dog
 	 */
 	fetchDogs(page = 1, name = '', breed = '') {
-		fetch(`http://localhost:3000/api/v1/dogs?page=${page}&name=${name}&breed=${breed}`)
+		fetch(`https://source-modem-3000.codio-box.uk/api/v1/dogs?page=${page}&name=${name}&breed=${breed}`)
 			.then(status)
 			.then(json)
 			.then((data) => {
