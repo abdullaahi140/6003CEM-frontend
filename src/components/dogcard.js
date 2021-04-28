@@ -10,6 +10,9 @@ import Image from './image.js';
 import DeleteIcon from './deleteicon.js';
 import { status } from '../utilities/requestHandlers.js';
 
+/**
+ * Card component displaying a dog
+ */
 class DogCard extends React.Component {
 	constructor(props) {
 		super(props);
@@ -19,13 +22,16 @@ class DogCard extends React.Component {
 		this.handleDelete = this.handleDelete.bind(this);
 	}
 
+	/**
+	 * Handler function that deletes a dog.
+	 */
 	handleDelete() {
 		const { user } = this.context;
 		const { ID, updateParent } = this.props;
 		fetch(`http://localhost:3000/api/v1/dogs/${ID}`, {
 			method: 'DELETE',
 			headers: {
-				Authorization: `Bearer ${user.accessToken}`
+				Authorization: `Bearer ${user.accessToken.token}`
 			}
 		})
 			.then(status)
@@ -103,14 +109,23 @@ class DogCard extends React.Component {
 
 DogCard.contextType = UserContext;
 DogCard.propTypes = {
+	/** ID of the dog */
 	ID: PropTypes.number.isRequired,
+	/** Name of the dog */
 	name: PropTypes.string.isRequired,
+	/** Age of the dog */
 	age: PropTypes.number.isRequired,
+	/** Breed of dog */
 	breed: PropTypes.string.isRequired,
+	/** Name of shelter */
 	locationName: PropTypes.string.isRequired,
+	/** Image ID of Dog */
 	imageID: PropTypes.number.isRequired,
+	/** Function to fetch list of dogs again */
 	updateParent: PropTypes.func.isRequired,
+	/** Boolean to indicate if the details have loaded */
 	loading: PropTypes.bool.isRequired,
+	/** Object containing the history of URLs for the app */
 	history: PropTypes.object.isRequired
 };
 

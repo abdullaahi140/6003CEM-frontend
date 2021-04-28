@@ -3,12 +3,18 @@ import { Input, Select } from 'antd';
 import PropTypes from 'prop-types';
 import { json, status } from '../utilities/requestHandlers.js';
 
+/**
+ * Search component that updates the list of dogs shown.
+ */
 class SearchBar extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = { breeds: [] };
 	}
 
+	/**
+	 * Fetch the list of breeds of dogs currently in a shelter.
+	 */
 	componentDidMount() {
 		fetch('http://localhost:3000/api/v1/dogs/breeds')
 			.then(status)
@@ -52,7 +58,9 @@ class SearchBar extends React.Component {
 }
 
 SearchBar.propTypes = {
+	/** Function to update dogs depending on the value in Input */
 	onSearch: PropTypes.func.isRequired,
+	/** Function to update dogs depending on the value in Select */
 	onSelect: PropTypes.func.isRequired
 };
 

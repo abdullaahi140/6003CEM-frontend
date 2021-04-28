@@ -7,12 +7,18 @@ import PropTypes from 'prop-types';
 import { json, status } from '../utilities/requestHandlers.js';
 import Image from './image.js';
 
+/**
+ * Dog details view component for user to get more info about a dog.
+ */
 class DogView extends React.PureComponent {
 	constructor(props) {
 		super(props);
 		this.state = { dog: {}, imageID: null };
 	}
 
+	/**
+	 * Fetch dog using ID from URL parameter.
+	 */
 	componentDidMount() {
 		const { match } = this.props;
 		const { dogID } = match.params;
@@ -60,7 +66,9 @@ class DogView extends React.PureComponent {
 }
 
 DogView.propTypes = {
+	/** Object containing info on the URL including parameters */
 	match: PropTypes.object.isRequired,
+	/** Object containing the history of URLs for the app */
 	history: PropTypes.object.isRequired
 };
 

@@ -40,6 +40,9 @@ class LoginForm extends React.Component {
 		this.handleGoogle = this.handleGoogle.bind(this);
 	}
 
+	/**
+	 * Function that fetch Google auth
+	 */
 	handleGoogle() {
 		fetch('http://localhost:3000/api/v1/auth/google/callback')
 			.then(status)
@@ -56,6 +59,9 @@ class LoginForm extends React.Component {
 			});
 	}
 
+	/**
+	 * Post the login request using values from the form
+	 * */
 	login(values) {
 		const { username, password } = values;
 		fetch('http://localhost:3000/api/v1/auth/login', {
@@ -94,12 +100,14 @@ class LoginForm extends React.Component {
 					<Input.Password />
 				</Form.Item>
 				<Form.Item {...tailFormItemLayout}>
-					<Button type="primary" htmlType="submit">Login</Button>
+					<Button style={{ marginBottom: '1rem' }} type="primary" htmlType="submit">Login</Button>
 					<OauthPopup
 						url="http://localhost:3000/api/v1/auth/google/callback"
 						onCode={(code, params) => {
-							console.error(code);
-							console.error(params);
+							// eslint-disable-next-line no-console
+							console.log(code);
+							// eslint-disable-next-line no-console
+							console.log(params);
 						}}
 						onClose={() => console.error('closed')}
 					>
@@ -113,7 +121,9 @@ class LoginForm extends React.Component {
 
 LoginForm.contextType = UserContext;
 LoginForm.propTypes = {
+	/** Object containing info on the past, present and future location of the app  */
 	location: PropTypes.object.isRequired,
+	/** Object containing the history of URLs for the app */
 	history: PropTypes.object.isRequired
 };
 

@@ -3,6 +3,10 @@ import { DeleteFilled, DeleteOutlined, QuestionCircleOutlined } from '@ant-desig
 import PropTypes from 'prop-types';
 import { Popconfirm } from 'antd';
 
+/**
+ * Icon that handles deletion of a resource. Asks the user to confirm deletion
+ * before going ahead.
+ */
 class DeleteIcon extends React.Component {
 	constructor(props) {
 		super(props);
@@ -30,6 +34,7 @@ class DeleteIcon extends React.Component {
 }
 
 DeleteIcon.propTypes = {
+	/** Function from parent that deletes the resource */
 	handleConfirm: PropTypes.func.isRequired
 };
 

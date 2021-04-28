@@ -9,6 +9,10 @@ import ChatCard from './chatcard.js';
 import { json, status } from '../utilities/requestHandlers.js';
 import UserContext from '../contexts/user.js';
 
+/**
+ * Chat component with list of chats linking to pages with all messages
+ * for a particular chat.
+ */
 class Chat extends React.Component {
 	constructor(props) {
 		super(props);
@@ -22,13 +26,16 @@ class Chat extends React.Component {
 		this.fetchChats();
 	}
 
+	/**
+	 * Post a request to start a new chat with a shelter
+	 */
 	handleConfirm(values) {
 		const { user } = this.context;
 		const { history } = this.props;
 		fetch(`http://localhost:3000/api/v1/chats/${values.shelter}`, {
 			method: 'POST',
 			headers: {
-				Authorization: `Bearer ${user.accessToken}`
+				Authorization: `Bearer ${user.accessToken.token}`
 			}
 		})
 			.then(status)
@@ -40,6 +47,9 @@ class Chat extends React.Component {
 			});
 	}
 
+	/**
+	 * Fetch list of chats depending on the user's role
+	 */
 	fetchChats() {
 		const { user } = this.context;
 		const { role, locationID } = user.user;
@@ -49,7 +59,7 @@ class Chat extends React.Component {
 		}
 		fetch(url, {
 			headers: {
-				Authorization: `Bearer ${user.accessToken}`
+				Authorization: `Bearer ${user.accessToken.token}`
 			}
 		})
 			.then(status)
@@ -62,11 +72,14 @@ class Chat extends React.Component {
 		this.fetchShelters();
 	}
 
+	/**
+	 * Fetch list of shelters that the user hasn't started a chat with.
+	 */
 	fetchShelters() {
 		const { user } = this.context;
 		fetch('http://localhost:3000/api/v1/locations', {
 			headers: {
-				Authorization: `Bearer ${user.accessToken}`
+				Authorization: `Bearer ${user.accessToken.token}`
 			}
 		})
 			.then(status)
@@ -142,7 +155,8 @@ class Chat extends React.Component {
 
 Chat.contextType = UserContext;
 Chat.propTypes = {
-	history: PropTypes.func.isRequired
+	/** Object containing the history of URLs for the app */
+	history: PropTypes.object.isRequired
 };
 
 export default withRouter(Chat);

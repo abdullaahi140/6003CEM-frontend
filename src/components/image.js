@@ -2,12 +2,18 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { json, status } from '../utilities/requestHandlers.js';
 
+/**
+ * Component that fetches an image from the API using the imageID
+ */
 class Image extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = { image: null };
 	}
 
+	/**
+	 * Fetch the image from the API
+	 */
 	componentDidMount() {
 		const { ID } = this.props;
 		fetch(`http://localhost:3000/api/v1/images/${ID}`)
@@ -30,9 +36,13 @@ class Image extends React.Component {
 }
 
 Image.propTypes = {
+	/** Image ID */
 	ID: PropTypes.number.isRequired,
+	/** Alt text for image */
 	alt: PropTypes.string.isRequired,
+	/** CSS style for image */
 	style: PropTypes.object,
+	/** onClick handler from parent component */
 	onClick: PropTypes.func
 };
 Image.defaultProps = {

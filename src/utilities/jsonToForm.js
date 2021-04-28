@@ -3,7 +3,6 @@
  * @param {object} body - The response body from the request to be converted
  * @returns {FormData} - The converted formData object
  */
-
 function jsonToForm(body) {
 	const { confirm: _confirm, upload, ...data } = body;
 	const form = new FormData();
