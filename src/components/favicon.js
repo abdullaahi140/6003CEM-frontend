@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { HeartOutlined, HeartFilled } from '@ant-design/icons';
+import HeartOutlined from '@ant-design/icons/HeartOutlined';
+import HeartFilled from '@ant-design/icons/HeartFilled';
 import UserContext from '../contexts/user.js';
 import { json, status } from '../utilities/requestHandlers.js';
 

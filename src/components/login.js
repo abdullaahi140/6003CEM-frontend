@@ -1,6 +1,6 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
-import { GoogleOutlined } from '@ant-design/icons';
+import GoogleOutlined from '@ant-design/icons/GoogleOutlined';
 import OauthPopup from 'react-oauth-popup';
 
 import {

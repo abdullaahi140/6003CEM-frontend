@@ -5,7 +5,7 @@ import {
 	Form, Input, Button, Upload, message
 } from 'antd';
 
-import { UploadOutlined } from '@ant-design/icons';
+import UploadOutlined from '@ant-design/icons/UploadOutlined';
 import PropTypes from 'prop-types';
 
 import { status, json } from '../utilities/requestHandlers.js';

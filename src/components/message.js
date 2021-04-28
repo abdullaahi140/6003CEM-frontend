@@ -4,7 +4,7 @@ import { withRouter } from 'react-router-dom';
 import {
 	Button, Input, List, PageHeader, Form
 } from 'antd';
-import { SendOutlined } from '@ant-design/icons';
+import SendOutlined from '@ant-design/icons/SendOutlined';
 import PropTypes from 'prop-types';
 
 import Comment from './comment.js';

@@ -2,7 +2,11 @@ import React from 'react';
 import {
 	Button, Form, Input, InputNumber, Layout, message, PageHeader, Select, TreeSelect, Upload
 } from 'antd';
-import { PlusOutlined, SaveOutlined, UploadOutlined } from '@ant-design/icons';
+
+import PlusOutlined from '@ant-design/icons/PlusOutlined';
+import SaveOutlined from '@ant-design/icons/SaveOutlined';
+import UploadOutlined from '@ant-design/icons/UploadOutlined';
+
 import PropTypes from 'prop-types';
 import UserContext from '../contexts/user.js';
 import { json, status } from '../utilities/requestHandlers.js';

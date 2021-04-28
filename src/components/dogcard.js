@@ -3,7 +3,9 @@ import { withRouter } from 'react-router-dom';
 import { Card, message } from 'antd';
 import PropTypes from 'prop-types';
 
-import { EditFilled, EditOutlined } from '@ant-design/icons';
+import EditFilled from '@ant-design/icons/EditFilled';
+import EditOutlined from '@ant-design/icons/EditOutlined';
+
 import UserContext from '../contexts/user.js';
 import FavIcon from './favicon.js';
 import Image from './image.js';
