@@ -16,7 +16,7 @@ class Image extends React.Component {
 	 */
 	componentDidMount() {
 		const { ID } = this.props;
-		fetch(`https://source-modem-3000.codio-box.uk/api/v1/images/${ID}`)
+		fetch(`http://localhost:3000/api/v1/images/${ID}`)
 			.then(status)
 			.then((res) => json(res, true))
 			.then((data) => {

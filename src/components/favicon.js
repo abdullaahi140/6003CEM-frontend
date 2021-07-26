@@ -39,7 +39,7 @@ class FavIcon extends React.Component {
 	fetchFav(method) {
 		const { user } = this.context;
 		const { dogID } = this.props;
-		fetch(`https://source-modem-3000.codio-box.uk/api/v1/dogs/favs/${dogID}`, {
+		fetch(`http://localhost:3000/api/v1/dogs/favs/${dogID}`, {
 			method,
 			headers: {
 				Authorization: `Bearer ${user.accessToken.token}`

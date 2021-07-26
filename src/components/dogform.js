@@ -65,7 +65,7 @@ class DogForm extends React.Component {
 	handleSubmit(values) {
 		const { user } = this.context;
 		const { dogID, method } = this.state;
-		let url = 'https://source-modem-3000.codio-box.uk/api/v1/dogs';
+		let url = 'http://localhost:3000/api/v1/dogs';
 		url = (dogID) ? `${url}/${dogID}` : url;
 		fetch(url, {
 			method,
@@ -88,7 +88,7 @@ class DogForm extends React.Component {
 	fetchDog() {
 		const { dogID } = this.state;
 		if (!dogID) return; // prevent fetching dog if no dogID
-		fetch(`https://source-modem-3000.codio-box.uk/api/v1/dogs/${dogID}`)
+		fetch(`http://localhost:3000/api/v1/dogs/${dogID}`)
 			.then(status)
 			.then(json)
 			.then((data) => this.formRef.current.setFieldsValue(data))
@@ -100,7 +100,7 @@ class DogForm extends React.Component {
 	 */
 	fetchShelterName() {
 		const { user } = this.context;
-		fetch(`https://source-modem-3000.codio-box.uk/api/v1/locations/${user.user.locationID}`, {
+		fetch(`http://localhost:3000/api/v1/locations/${user.user.locationID}`, {
 			headers: {
 				Authorization: `Bearer ${user.accessToken.token}`
 			}

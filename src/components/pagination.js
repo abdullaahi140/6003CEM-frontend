@@ -25,7 +25,7 @@ class Page extends React.Component {
 
 	/** Function that fetches the number of dogs depending on search terms */
 	fetchCount(name = '', breed = '') {
-		fetch(`https://source-modem-3000.codio-box.uk/api/v1/dogs/count?name=${name}&breed=${breed}`)
+		fetch(`http://localhost:3000/api/v1/dogs/count?name=${name}&breed=${breed}`)
 			.then(status)
 			.then(json)
 			.then((data) => {

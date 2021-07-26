@@ -21,7 +21,7 @@ class MessageComment extends React.Component {
 	handleDelete() {
 		const { user } = this.context;
 		const { ID, updateParent } = this.props;
-		fetch(`https://source-modem-3000.codio-box.uk/api/v1/messages/${ID}`, {
+		fetch(`http://localhost:3000/api/v1/messages/${ID}`, {
 			method: 'DELETE',
 			headers: {
 				Authorization: `Bearer ${user.accessToken.token}`

@@ -25,9 +25,7 @@ function ProtectedRoute({ component: Component, ...rest }) {
 
 ProtectedRoute.propTypes = {
 	/** The component that is being protected */
-	component: PropTypes.elementType.isRequired,
-	/** Object containing info on the past, present and future location of the app  */
-	location: PropTypes.object.isRequired
+	component: PropTypes.func.isRequired
 };
 
 export default ProtectedRoute;

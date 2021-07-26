@@ -16,7 +16,7 @@ class SearchBar extends React.Component {
 	 * Fetch the list of breeds of dogs currently in a shelter.
 	 */
 	componentDidMount() {
-		fetch('https://source-modem-3000.codio-box.uk/api/v1/dogs/breeds')
+		fetch('http://localhost:3000/api/v1/dogs/breeds')
 			.then(status)
 			.then(json)
 			.then((data) => {

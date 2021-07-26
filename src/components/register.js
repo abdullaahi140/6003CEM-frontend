@@ -77,7 +77,7 @@ class RegistrationForm extends React.Component {
 	 * @param {Object} values - Object containing all the values entered in the form
 	 */
 	onFinish(values) {
-		fetch('https://source-modem-3000.codio-box.uk/api/v1/users', {
+		fetch('http://localhost:3000/api/v1/users', {
 			method: 'POST',
 			body: jsonToForm(values)
 		})
@@ -95,7 +95,7 @@ class RegistrationForm extends React.Component {
 	 * @param {object} registeredUser - The user object
 	 */
 	login(registeredUser) {
-		fetch('https://source-modem-3000.codio-box.uk/api/v1/auth/login', {
+		fetch('http://localhost:3000/api/v1/auth/login', {
 			method: 'POST',
 			headers: {
 				Authorization: `Bearer ${registeredUser.accessToken.token}`
