@@ -1,4 +1,4 @@
-# 6003 CEM Frontend
+# Dogs Charity Frontend
 
 This is the React SPA for the dog charity shelter.
 
