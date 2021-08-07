@@ -1,38 +1,37 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { json, status } from '../utilities/requestHandlers.js';
+import { useQuery } from 'react-query';
+import axios from 'axios';
 
 /**
  * Component that fetches an image from the API using the imageID
  */
-class Image extends React.Component {
-	constructor(props) {
-		super(props);
-		this.state = { image: null };
+function Image(props) {
+	const {
+		ID, alt, style, onClick
+	} = props;
+
+	function fetchImage({ queryKey }) {
+		const [_key, imageID] = queryKey;
+		return axios(`http://localhost:3000/api/v1/images/${imageID}`, {
+			responseType: 'blob'
+		}).then((response) => URL.createObjectURL(response.data));
 	}
 
-	/**
-	 * Fetch the image from the API
-	 */
-	componentDidMount() {
-		const { ID } = this.props;
-		fetch(`https://source-modem-3000.codio-box.uk/api/v1/images/${ID}`)
-			.then(status)
-			.then((res) => json(res, true))
-			.then((data) => {
-				this.setState({ image: URL.createObjectURL(data) });
-			})
-			.catch((err) => console.error(err, 'Error fetching image'));
-	}
+	const { data } = useQuery(['image', ID], fetchImage, {
+		onError: ((error) => console.error(error, `Error fetching image ID: ${ID}`))
+	});
 
-	render() {
-		const { image } = this.state;
-		const { alt, style, onClick } = this.props;
-		return (
-			// eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
-			<img src={image} alt={alt} style={style} onClick={onClick} onKeyPress={onClick} />
-		);
-	}
+	return (
+		// eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
+		<img
+			src={data}
+			alt={alt}
+			style={style}
+			onClick={onClick}
+			onKeyPress={onClick}
+		/>
+	);
 }
 
 Image.propTypes = {

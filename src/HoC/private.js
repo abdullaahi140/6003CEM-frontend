@@ -1,7 +1,7 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { Redirect, Route } from 'react-router-dom';
-import UserContext from '../contexts/user.js';
+import useAuthentication from '../hooks/useAuthentication.js';
 
 /**
  * Protects a route by checking the authenticated state before rendering a component
@@ -10,12 +10,12 @@ import UserContext from '../contexts/user.js';
  * @returns {Route} - A Route object that renders inline the component that was being protected
  */
 function ProtectedRoute({ component: Component, ...rest }) {
-	const context = useContext(UserContext);
+	const { state: { loggedIn } } = useAuthentication();
 	return (
 		<Route
 			{...rest}
 			render={(renderProps) => (
-				(context.loggedIn)
+				(loggedIn)
 					? <Component {...renderProps} />
 					: <Redirect to={{ pathname: '/login', state: { from: renderProps.location } }} />
 			)}
@@ -25,9 +25,7 @@ function ProtectedRoute({ component: Component, ...rest }) {
 
 ProtectedRoute.propTypes = {
 	/** The component that is being protected */
-	component: PropTypes.elementType.isRequired,
-	/** Object containing info on the past, present and future location of the app  */
-	location: PropTypes.object.isRequired
+	component: PropTypes.func.isRequired
 };
 
 export default ProtectedRoute;

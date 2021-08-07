@@ -1,177 +1,138 @@
-import React from 'react';
-import { withRouter } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useHistory, useParams } from 'react-router-dom';
+import { useMutation, useQuery } from 'react-query';
 
 import {
 	Button, Input, List, PageHeader, Form
 } from 'antd';
 import SendOutlined from '@ant-design/icons/SendOutlined';
-import PropTypes from 'prop-types';
 
+import axios from 'axios';
 import Comment from './comment.js';
-import UserContext from '../contexts/user.js';
-import { json, status } from '../utilities/requestHandlers.js';
+import useAuthentication from '../hooks/useAuthentication.js';
 
 /**
  * Component that displays a list of current messages and a form to send new messages.
  */
-class Message extends React.Component {
-	constructor(props) {
-		super(props);
-		const { match } = this.props;
-		this.state = {
-			chatID: match.params.chatID,
-			shelterName: '',
-			messages: [],
-			value: ''
-		};
-		this.handleChange = this.handleChange.bind(this);
-		this.handleSubmit = this.handleSubmit.bind(this);
-		this.fetchMessages = this.fetchMessages.bind(this);
-	}
+function Message() {
+	const { state: { accessToken } } = useAuthentication();
+	const { chatID } = useParams();
+	const { history } = useHistory();
+	const [value, setValue] = useState('');
 
 	/**
 	 * Get request to retrieve all messages for the current chat.
 	 */
-	componentDidMount() {
-		const { user } = this.context;
-		const { chatID } = this.state;
-		fetch(`https://source-modem-3000.codio-box.uk/api/v1/chats/${chatID}`, {
+	function fetchChat() {
+		return axios(`http://localhost:3000/api/v1/chats/${chatID}`, {
 			headers: {
-				Authorization: `Bearer ${user.accessToken.token}`
+				Authorization: `Bearer ${accessToken.token}`
 			}
 		})
-			.then(status)
-			.then(json)
-			.then((data) => this.setState({ shelterName: data.locationName }))
-			.catch((err) => console.error(err));
-		this.fetchMessages();
-		setInterval(this.fetchMessages, 1000); // refresh messages every second
+			.then((response) => response.data);
 	}
 
-	/**
-	 * Stop fetching messages when the component is not in view
-	 */
-	componentWillUnmount() {
-		clearInterval(this.fetchMessages);
-	}
-
-	/**
-	 * Update state when the text area is populated with text.
-	 */
-	handleChange(event) {
-		this.setState({ value: event.target.value });
-	}
-
-	/**
-	 * Submits the form if a message is provided for the current chat.
-	 */
-	handleSubmit() {
-		const { user } = this.context;
-		const { chatID, value } = this.state;
-		if (!value) {
-			return; // don't post if text area is empty
-		}
-
-		fetch(`https://source-modem-3000.codio-box.uk/api/v1/messages/${chatID}`, {
-			method: 'POST',
-			body: JSON.stringify({ message: value }),
-			headers: {
-				'Content-Type': 'application/json',
-				Authorization: `Bearer ${user.accessToken.token}`
-			}
-		})
-			.then(status)
-			.then(json)
-			.then(() => {
-				this.setState({ value: '' });
-				this.fetchMessages();
-				window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' }); // scroll to bottom
-			})
-			.catch((err) => {
-				json(err)
-					.then((data) => console.error(data));
-			});
-	}
+	const { data: chat, isSuccess: chatSuccess } = useQuery(['chat', chatID], fetchChat);
 
 	/**
 	 * Fetch messages for the current chat.
 	 */
-	fetchMessages() {
-		const { user } = this.context;
-		const { chatID } = this.state;
-		fetch(`https://source-modem-3000.codio-box.uk/api/v1/messages/${chatID}`, {
+	function fetchMessages() {
+		return axios(`http://localhost:3000/api/v1/messages/${chatID}`, {
 			headers: {
-				Authorization: `Bearer ${user.accessToken.token}`
+				Authorization: `Bearer ${accessToken.token}`
 			}
 		})
-			.then(status)
-			.then(json)
-			.then((data) => this.setState({ messages: data }))
-			.catch((err) => {
-				console.error(err);
-				this.setState({ messages: [] });
-			});
+			.then((response) => response.data);
 	}
 
-	render() {
-		const { shelterName, messages, value } = this.state;
-		const { history } = this.props;
-		return (
-			<div style={{ padding: '0% 10% 1%' }}>
+	const { data: messages, isSuccess: msgSuccess } = useQuery(
+		['messages', chatID], fetchMessages, {
+			refetchInterval: 1000
+		}
+	);
+
+	/**
+ * Submits the form if a message is provided for the current chat.
+ */
+	function postMessage() {
+		if (!value) {
+			return null; // don't post if text area is empty
+		}
+
+		return axios(`http://localhost:3000/api/v1/messages/${chatID}`, {
+			method: 'POST',
+			data: { message: value },
+			headers: {
+				Authorization: `Bearer ${accessToken.token}`
+			}
+		});
+	}
+
+	const { mutate } = useMutation(postMessage, {
+		onSuccess: () => {
+			setValue('');
+			window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' }); // scroll to bottom
+		}
+	});
+
+	return (
+		<div style={{ padding: '0% 10% 1%' }}>
+			{chatSuccess && (
 				<PageHeader
 					className="site-page-header"
-					title={`${shelterName} Shelter`}
+					title={`${chat.locationName} Shelter`}
 					subTitle="Have a chat with us and we'll try our best."
 					onBack={() => history.push('/chats')}
 				/>
+			)}
 
+			{msgSuccess && (
 				<List
-					style={{ padding: '2rem' }}
+					style={{ padding: '2rem 2rem 0rem' }}
 					header={`${messages.length} messages`}
 					itemLayout="horizontal"
 					dataSource={messages}
-					renderItem={(item) => (
+					renderItem={(message) => (
 						<li>
 							<Comment
-								{...item}
-								updateParent={this.fetchMessages}
+								{...message}
+								updateParent={fetchMessages}
 							/>
 						</li>
 					)}
 				/>
+			)}
 
-				<Form className="blur-form" style={{ position: 'sticky', bottom: '0.5rem' }} onFinish={this.handleSubmit}>
-					<Form.Item>
-						<Input.TextArea
-							name="message"
-							disabled={(shelterName === '')}
-							rows={4}
-							value={value}
-							onChange={this.handleChange}
-						/>
-					</Form.Item>
-					<Form.Item>
+			<Form
+				// className="blur-form"
+				style={{ position: 'sticky', bottom: '0rem', backgroundColor: '#FFFFFF' }}
+				onFinish={mutate}
+			>
+				<Form.Item>
+					<Input.TextArea
+						name="message"
+						rows={4}
+						value={value}
+						placeholder="Type your message here"
+						onChange={(event) => setValue(event.target.value)}
+					/>
+				</Form.Item>
+				<Form.Item>
+					{value.length > 0 && (
 						<Button
+							style={{ marginBottom: '2rem' }}
 							type="primary"
 							htmlType="submit"
 							icon={<SendOutlined />}
-							disabled={(shelterName === '')}
 						>
 							Send Message
 						</Button>
-					</Form.Item>
-				</Form>
-			</div>
-		);
-	}
+					)}
+				</Form.Item>
+			</Form>
+		</div>
+	);
 }
 
-Message.contextType = UserContext;
-Message.propTypes = {
-	/** Object containing info on the URL including parameters */
-	match: PropTypes.object.isRequired,
-	/** Object containing the history of URLs for the app */
-	history: PropTypes.object.isRequired
-};
-
-export default withRouter(Message);
+export default Message;

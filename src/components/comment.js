@@ -1,57 +1,64 @@
 import React from 'react';
+import { useMutation, useQueryClient } from 'react-query';
 import { Comment, message as Message } from 'antd';
+import axios from 'axios';
+
 import PropTypes from 'prop-types';
-import UserContext from '../contexts/user.js';
+
 import DeleteIcon from './deleteicon.js';
-import { status } from '../utilities/requestHandlers.js';
 import Image from './image.js';
+import useAuthentication from '../hooks/useAuthentication.js';
 
 /**
  * Component that renders a single message from a chat.
  */
-class MessageComment extends React.Component {
-	constructor(props) {
-		super(props);
-		this.handleDelete = this.handleDelete.bind(this);
-	}
+function MessageComment(props) {
+	const { state: { user, accessToken } } = useAuthentication();
+	const {
+		ID, senderName, senderID, senderImageID, message, dateCreated
+	} = props;
+	const queryClient = useQueryClient();
 
 	/**
 	 * Delete a message from a chat.
 	 */
-	handleDelete() {
-		const { user } = this.context;
-		const { ID, updateParent } = this.props;
-		fetch(`https://source-modem-3000.codio-box.uk/api/v1/messages/${ID}`, {
+	function deleteMessage() {
+		return axios(`http://localhost:3000/api/v1/messages/${ID}`, {
 			method: 'DELETE',
 			headers: {
-				Authorization: `Bearer ${user.accessToken.token}`
+				Authorization: `Bearer ${accessToken.token}`
 			}
-		})
-			.then(status)
-			.then(() => updateParent())
-			.catch((err) => {
-				console.error(err);
-				Message.error('You can not delete this message');
-			});
+		});
 	}
 
-	render() {
-		const {
-			ID, senderName, senderImageID, message, dateCreated
-		} = this.props;
-		return (
-			<Comment
-				author={senderName}
-				avatar={<Image ID={senderImageID} alt={senderName} />}
-				content={message}
-				datetime={new Date(Date.parse(dateCreated)).toLocaleString()}
-				actions={[<DeleteIcon handleConfirm={this.handleDelete} key={ID} />]}
-			/>
-		);
+	const { mutate } = useMutation(deleteMessage, {
+		onSuccess: () => queryClient.refetchQueries('messages'),
+		onError: () => Message.error('Message could not be deleted')
+	});
+
+	/**
+	 * Determines whether to show the delete icon for a message
+	 * Depends on who sent the message and the user's role
+	 * @returns {null | React.ElementType<DeleteIcon>}
+	 */
+	function showDeleteIcon() {
+		if (user.ID === senderID || user.role !== 'user') {
+			return <DeleteIcon handleConfirm={mutate} key={ID} />;
+		}
+		return null;
 	}
+
+	return (
+		<Comment
+			author={senderName}
+			avatar={<Image ID={senderImageID} alt={senderName} />}
+			content={message}
+			datetime={new Date(Date.parse(dateCreated)).toLocaleString()}
+			actions={[showDeleteIcon()]}
+		/>
+	);
 }
 
-MessageComment.contextType = UserContext;
 MessageComment.propTypes = {
 	/** ID of message */
 	ID: PropTypes.number.isRequired,
@@ -59,12 +66,12 @@ MessageComment.propTypes = {
 	senderImageID: PropTypes.number.isRequired,
 	/** Name of user who sent message */
 	senderName: PropTypes.string.isRequired,
+	/** ID of user who sent message */
+	senderID: PropTypes.string.isRequired,
 	/** The message string */
 	message: PropTypes.string.isRequired,
 	/** Datetime of the message being sent */
-	dateCreated: PropTypes.string.isRequired,
-	/** Function to update list of messages from parent component */
-	updateParent: PropTypes.func.isRequired
+	dateCreated: PropTypes.string.isRequired
 };
 
 export default MessageComment;

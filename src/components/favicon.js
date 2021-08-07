@@ -2,85 +2,73 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import HeartOutlined from '@ant-design/icons/HeartOutlined';
 import HeartFilled from '@ant-design/icons/HeartFilled';
-import UserContext from '../contexts/user.js';
-import { json, status } from '../utilities/requestHandlers.js';
+import axios from 'axios';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
+import useAuthentication from '../hooks/useAuthentication.js';
 
 /**
  * Icon component handling favouriting dogs
  */
-class FavIcon extends React.Component {
-	constructor(props) {
-		super(props);
-		this.state = { favourite: false };
-		this.fetchFav = this.fetchFav.bind(this);
-		this.handleClick = this.handleClick.bind(this);
-	}
-
-	componentDidMount() {
-		this.fetchFav('GET');
-	}
-
-	/**
-	 * Set fetch method depending on the state of the icon when clicked
-	 * */
-	handleClick() {
-		const { favourite } = this.state;
-		if (favourite) {
-			this.fetchFav('DELETE');
-		} else {
-			this.fetchFav('POST');
-		}
-	}
+function FavIcon({ dogID }) {
+	const { state: { accessToken } } = useAuthentication();
+	const queryClient = useQueryClient();
 
 	/**
 	 * Function that adds or remove favourite for dog
 	 * @param {string} method - HTTP method for request (POST, DELETE e.g.)
 	 */
-	fetchFav(method) {
-		const { user } = this.context;
-		const { dogID } = this.props;
-		fetch(`https://source-modem-3000.codio-box.uk/api/v1/dogs/favs/${dogID}`, {
-			method,
+	function fetchFav() {
+		return axios(`http://localhost:3000/api/v1/dogs/favs/${dogID}`, {
+			method: 'GET',
 			headers: {
-				Authorization: `Bearer ${user.accessToken.token}`
+				Authorization: `Bearer ${accessToken.token}`
 			}
 		})
-			.then(status)
-			.then(json)
-			.then(() => {
-				if (method !== 'DELETE') {
-					this.setState({ favourite: true });
-				} else {
-					this.setState({ favourite: false });
-				}
-			})
-			.catch(() => {
-				if (method !== 'DELETE') {
-					this.setState({ favourite: false });
-				} else {
-					this.setState({ favourite: true });
-				}
-			});
+			.then((response) => response.data);
 	}
 
-	render() {
-		let Icon;
-		let color;
-		const { favourite } = this.state;
-		if (favourite) {
-			Icon = HeartFilled;
-			color = 'red';
-		} else {
-			Icon = HeartOutlined;
-			color = 'black';
-		}
-		return (
-			<Icon style={{ color }} onClick={this.handleClick} />
-		);
+	const { data, isSuccess } = useQuery(['fav', dogID], fetchFav, {
+		onError: ((error) => console.error(error, `Could not fetch favourite on dog ID ${dogID}`))
+	});
+
+	function postOrDelFav({ method, _ID }) {
+		return axios(`http://localhost:3000/api/v1/dogs/favs/${dogID}`, {
+			method,
+			headers: {
+				Authorization: `Bearer ${accessToken.token}`
+			}
+		})
+			.then((response) => response.data);
 	}
+
+	const { mutate } = useMutation(postOrDelFav, {
+		onSuccess: ((mutationResp) => {
+			queryClient.setQueryData(['fav', dogID], mutationResp);
+			queryClient.refetchQueries('favs');
+		}),
+		onError: ((error) => console.error(error))
+	});
+
+	let Icon = HeartOutlined;
+	let color = 'black';
+	if (isSuccess && data.favourite) {
+		Icon = HeartFilled;
+		color = 'red';
+	}
+
+	function handleClick() {
+		const params = { method: 'POST' };
+		if (isSuccess && data.favourite) {
+			params.method = 'DELETE';
+		}
+		mutate(params);
+	}
+
+	return (
+		<Icon style={{ color }} onClick={handleClick} />
+	);
 }
 
-FavIcon.contextType = UserContext;
 FavIcon.propTypes = {
 	/** Dog ID */
 	dogID: PropTypes.number.isRequired

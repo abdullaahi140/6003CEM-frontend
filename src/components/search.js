@@ -1,60 +1,53 @@
 import React from 'react';
 import { Input, Select } from 'antd';
+import { useQuery } from 'react-query';
 import PropTypes from 'prop-types';
-import { json, status } from '../utilities/requestHandlers.js';
+import axios from 'axios';
 
 /**
  * Search component that updates the list of dogs shown.
  */
-class SearchBar extends React.Component {
-	constructor(props) {
-		super(props);
-		this.state = { breeds: [] };
-	}
+function SearchBar(props) {
+	const { Search } = Input;
+	const { Option } = Select;
+	const { onSelect, onSearch } = props;
 
 	/**
 	 * Fetch the list of breeds of dogs currently in a shelter.
 	 */
-	componentDidMount() {
-		fetch('https://source-modem-3000.codio-box.uk/api/v1/dogs/breeds')
-			.then(status)
-			.then(json)
-			.then((data) => {
-				this.setState({ breeds: data });
-			})
+	function fetchBreeds() {
+		return axios('http://localhost:3000/api/v1/dogs/breeds')
+			.then((response) => response.data)
 			.catch((err) => console.error(err, 'Error fetching breeds'));
 	}
 
-	render() {
-		const { Search } = Input;
-		const { Option } = Select;
-		const { breeds } = this.state;
-		const { onSelect, onSearch } = this.props;
-		const breedOptions = breeds.map((breed, index) => (
-			// eslint-disable-next-line react/no-array-index-key
-			<Option key={index} value={breed}>{breed}</Option>
-		));
-		const selectAfter = (
-			<Select
-				style={{ width: 140 }}
-				allowClear
-				placeholder="Filter by breed"
-				onChange={onSelect}
-			>
-				{breedOptions}
-			</Select>
-		);
-		return (
-			<Search
-				placeholder="Search dogs..."
-				allowClear
-				size="large"
-				addonBefore={selectAfter}
-				enterButton="Search"
-				onSearch={onSearch}
-			/>
-		);
-	}
+	const { data, isSuccess } = useQuery('breeds', fetchBreeds);
+
+	const breedOptions = isSuccess && data.map((breed, index) => (
+		// eslint-disable-next-line react/no-array-index-key
+		<Option key={index} value={breed}>{breed}</Option>
+	));
+
+	const selectAfter = (
+		<Select
+			style={{ width: 140 }}
+			allowClear
+			placeholder="Filter by breed"
+			onChange={onSelect}
+		>
+			{breedOptions}
+		</Select>
+	);
+	return (
+		<Search
+			placeholder="Search dogs..."
+			allowClear
+			size="large"
+			addonBefore={selectAfter}
+			enterButton="Search"
+			onSearch={onSearch}
+		/>
+	);
 }
 
 SearchBar.propTypes = {

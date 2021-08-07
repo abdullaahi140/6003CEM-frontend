@@ -1,115 +1,109 @@
-import React from 'react';
-import { withRouter } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useHistory } from 'react-router-dom';
+import { useMutation, useQueryClient } from 'react-query';
 import { Card, message } from 'antd';
+import axios from 'axios';
 import PropTypes from 'prop-types';
 
 import EditFilled from '@ant-design/icons/EditFilled';
 import EditOutlined from '@ant-design/icons/EditOutlined';
 
-import UserContext from '../contexts/user.js';
+import useAuthentication from '../hooks/useAuthentication.js';
+
+import DeleteIcon from './deleteicon.js';
 import FavIcon from './favicon.js';
 import Image from './image.js';
-import DeleteIcon from './deleteicon.js';
-import { status } from '../utilities/requestHandlers.js';
 
 /**
  * Card component displaying a dog
  */
-class DogCard extends React.Component {
-	constructor(props) {
-		super(props);
-		this.state = {
-			hover: false
-		};
-		this.handleDelete = this.handleDelete.bind(this);
-	}
+function DogCard(props) {
+	const { state: { user, loggedIn, accessToken } } = useAuthentication();
+	const [hover, setHover] = useState(false);
+	const history = useHistory();
+	const queryClient = useQueryClient();
+	const {
+		ID, age, breed, name, locationName, loading, imageID
+	} = props;
 
 	/**
 	 * Handler function that deletes a dog.
 	 */
-	handleDelete() {
-		const { user } = this.context;
-		const { ID, updateParent } = this.props;
-		fetch(`https://source-modem-3000.codio-box.uk/api/v1/dogs/${ID}`, {
+	function postDeleteDog({ ID: dogID }) {
+		return axios(`http://localhost:3000/api/v1/dogs/${dogID}`, {
 			method: 'DELETE',
 			headers: {
-				Authorization: `Bearer ${user.accessToken.token}`
+				Authorization: `Bearer ${accessToken.token
+				}`
 			}
-		})
-			.then(status)
-			.then(() => updateParent())
-			.catch((err) => {
-				console.error(err);
-				message.error('You can not delete this dog');
-			});
+		});
 	}
 
-	render() {
-		const { loggedIn, user } = this.context;
-		const { hover } = this.state;
-		const {
-			ID, age, breed, name, locationName, loading, imageID, history
-		} = this.props;
-
-		const actions = [
-			<p key={ID}>
-				Age:
-				{age}
-			</p>,
-			<p key={ID}>
-				{breed}
-			</p>
-		];
-
-		if (loggedIn) {
-			actions.push(<FavIcon key={ID} dogID={ID} />);
+	const { mutate } = useMutation(postDeleteDog, {
+		onSuccess: () => queryClient.invalidateQueries('dogs'),
+		onError: (error) => {
+			console.error(error);
+			message.error('You can not delete this dog');
 		}
+	});
 
-		if (loggedIn && user.user.role !== 'user') {
-			actions.push(
-				(hover) ? (
-					<EditFilled
+	const actions = [
+		<p key={ID}>
+			Age:&nbsp;
+			{age}
+		</p>,
+		<p key={ID}>
+			{breed}
+		</p>
+	];
+
+	if (loggedIn) {
+		actions.push(<FavIcon key={ID} dogID={ID} />);
+	}
+
+	if (loggedIn && user.role !== 'user') {
+		actions.push(
+			(hover) ? (
+				<EditFilled
+					style={{ color: 'orange' }}
+					onMouseLeave={() => setHover(false)}
+					onClick={() => history.push(`/dog_form/${ID}`)}
+				/>
+			)
+				: (
+					<EditOutlined
 						style={{ color: 'orange' }}
-						onMouseLeave={() => this.setState({ hover: false })}
-						onClick={() => history.push(`/dog_form/${ID}`)}
+						onMouseOver={() => setHover(true)}
 					/>
 				)
-					: (
-						<EditOutlined
-							style={{ color: 'orange' }}
-							onMouseOver={() => this.setState({ hover: true })}
-						/>
-					)
-			);
-			actions.push(<DeleteIcon handleConfirm={this.handleDelete} key={ID} />);
-		}
+		);
+		actions.push(<DeleteIcon handleConfirm={() => mutate({ ID })} key={ID} />);
+	}
 
-		return (
-			<Card
-				style={{ width: 432 }}
-				hoverable
-				loading={loading}
-				actions={actions}
-				cover={(
-					<Image
-						ID={imageID}
-						alt="dog"
-						style={{ width: '432px', height: '243px', objectFit: 'cover' }}
-						onClick={() => history.push(`/dog/${ID}`)}
-					/>
-				)}
-			>
-				<Card.Meta
-					title={name}
-					description={`${locationName} Shelter`}
+	return (
+		<Card
+			style={{ width: 432 }}
+			hoverable
+			loading={loading}
+			actions={actions}
+			cover={(
+				<Image
+					ID={imageID}
+					alt="dog"
+					style={{ width: '432px', height: '243px', objectFit: 'cover' }}
 					onClick={() => history.push(`/dog/${ID}`)}
 				/>
-			</Card>
-		);
-	}
+			)}
+		>
+			<Card.Meta
+				title={name}
+				description={`${locationName} Shelter`}
+				onClick={() => history.push(`/dog/${ID}`)}
+			/>
+		</Card>
+	);
 }
 
-DogCard.contextType = UserContext;
 DogCard.propTypes = {
 	/** ID of the dog */
 	ID: PropTypes.number.isRequired,
@@ -124,11 +118,7 @@ DogCard.propTypes = {
 	/** Image ID of Dog */
 	imageID: PropTypes.number.isRequired,
 	/** Function to fetch list of dogs again */
-	updateParent: PropTypes.func.isRequired,
-	/** Boolean to indicate if the details have loaded */
-	loading: PropTypes.bool.isRequired,
-	/** Object containing the history of URLs for the app */
-	history: PropTypes.object.isRequired
+	loading: PropTypes.bool.isRequired
 };
 
-export default withRouter(DogCard);
+export default DogCard;

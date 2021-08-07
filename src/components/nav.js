@@ -1,46 +1,52 @@
+/* eslint-disable no-unused-vars */
 import React from 'react';
-import { Menu } from 'antd';
+import { Button, Menu, message } from 'antd';
 import { Link } from 'react-router-dom';
-import UserContext from '../contexts/user.js';
+import { useMutation } from 'react-query';
+import axios from 'axios';
+import useAuthentication from '../hooks/useAuthentication.js';
 
 /**
  * Nav component that conditionally renders links depending on authentication
  * state and user role.
  */
-class Nav extends React.Component {
-	constructor(props) {
-		super(props);
-		this.handleLogout = this.handleLogout.bind(this);
-		this.handleNav = this.handleNav.bind(this);
-	}
+function Nav() {
+	const { state, logout } = useAuthentication();
 
 	/**
 	 * Post request to API when user logs out
 	 */
-	handleLogout() {
-		const { user, logout } = this.context;
-		fetch('https://source-modem-3000.codio-box.uk/api/v1/auth/logout', {
+	function handleLogout() {
+		axios('http://localhost:3000/api/v1/auth/logout', {
 			method: 'POST',
 			headers: {
-				Authorization: `Bearer ${user.accessToken.token}`
+				Authorization: `Bearer ${state.accessToken.token}`
 			}
-		})
-			.catch((err) => console.error(err));
-		logout();
+		});
 	}
+
+	const { mutate } = useMutation(handleLogout, {
+		onSuccess: () => {
+			logout();
+			message.success('Successfully logged out');
+		},
+		onError: (error) => {
+			console.error(error.response.config.method);
+		}
+	});
 
 	/**
 	 * Function that adds links to the nav depending on authentication state
 	 * and user role.
 	 * @returns {Menu.Item} - The links to render in the nav bar
 	 */
-	handleNav() {
-		const { loggedIn, user } = this.context;
+	function handleNav() {
+		const { user, loggedIn } = state;
 		let dogNav;
 		let loginNav;
 
 		try {
-			if (user.user.role !== 'user') {
+			if (user.role !== 'user') {
 				dogNav = (
 					<Menu.Item key="4">
 						<Link to="/dog_form">Add a dog</Link>
@@ -68,26 +74,22 @@ class Nav extends React.Component {
 			);
 		} else {
 			loginNav = (
-				<Menu.Item key="5" onClick={this.handleLogout} style={{ float: 'right' }}>
-					<Link to="/">Logout</Link>
+				<Menu.Item key="5" onClick={() => mutate()} style={{ float: 'right' }}>
+					Logout
 				</Menu.Item>
 			);
 		}
 		return [dogNav, loginNav];
 	}
 
-	render() {
-		return (
-			<Menu theme="dark" defaultSelectedKeys={['1']} mode="horizontal">
-				<Menu.Item key="1"><Link to="/">Home</Link></Menu.Item>
-				<Menu.Item key="2"><Link to="/favourites">Favourites</Link></Menu.Item>
-				<Menu.Item key="3"><Link to="/chats">Contact a Shelter</Link></Menu.Item>
-				{ this.handleNav()}
-			</Menu>
-		);
-	}
+	return (
+		<Menu theme="dark" defaultSelectedKeys={['1']} mode="horizontal">
+			<Menu.Item key="1"><Link to="/">Home</Link></Menu.Item>
+			<Menu.Item key="2"><Link to="/favourites">Favourites</Link></Menu.Item>
+			<Menu.Item key="3"><Link to="/chats">Contact a Shelter</Link></Menu.Item>
+			{handleNav()}
+		</Menu>
+	);
 }
-
-Nav.contextType = UserContext;
 
 export default Nav;

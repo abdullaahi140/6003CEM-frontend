@@ -1,59 +1,41 @@
 import React from 'react';
 import { PageHeader } from 'antd';
-import { withRouter } from 'react-router-dom';
-import UserContext from '../contexts/user.js';
-import { json, status } from '../utilities/requestHandlers.js';
+import { useQuery } from 'react-query';
+import axios from 'axios';
+import useAuthentication from '../hooks/useAuthentication.js';
 import DogGrid from './doggrid.js';
 
 /**
  * Favourite component showing list of favourite dogs
  */
-class Favourite extends React.Component {
-	constructor(props) {
-		super(props);
-		this.state = {
-			dogs: [],
-			loading: true
-		};
-	}
+function Favourite() {
+	const { state: { accessToken } } = useAuthentication();
 
-	/**
-	 * Fetch all favourite dogs from API
-	 */
-	componentDidMount() {
-		const { user } = this.context;
-		fetch('https://source-modem-3000.codio-box.uk/api/v1/dogs/favs', {
+	function fetchFavDogs() {
+		return axios('http://localhost:3000/api/v1/dogs/favs', {
 			headers: {
-				Authorization: `Bearer ${user.accessToken.token}`
+				Authorization: `Bearer ${accessToken.token}`
 			}
 		})
-			.then(status)
-			.then(json)
-			.then((data) => this.setState({ dogs: data, loading: false }))
-			.catch((err) => {
-				this.setState({ dogs: [] });
-				console.error(err, 'Error fetching dogs');
-			});
+			.then((response) => response.data)
+			.catch((err) => console.error(err, 'Error fetching favourite dogs'));
 	}
 
-	render() {
-		const { dogs, loading } = this.state;
-		return (
-			<div className="site-layout-content">
-				<div style={{ padding: '0% 10% 1%', textAlign: 'center' }}>
-					<PageHeader
-						style={{ padding: '0% 0% 1%' }}
-						className="site-page-header"
-						title="Favourite Dogs"
-						subTitle="Browse through the list and adopt a dog."
-					/>
-				</div>
-				<DogGrid dogs={dogs} loading={loading} />
+	const { data, isLoading, isSuccess } = useQuery('favs', fetchFavDogs);
+
+	return (
+		<div className="site-layout-content">
+			<div style={{ padding: '0% 10% 1%', textAlign: 'center' }}>
+				<PageHeader
+					style={{ padding: '0% 0% 1%' }}
+					className="site-page-header"
+					title="Favourite Dogs"
+					subTitle="Browse through the list and adopt a dog."
+				/>
 			</div>
-		);
-	}
+			{isSuccess && <DogGrid dogs={data} loading={isLoading} />}
+		</div>
+	);
 }
 
-Favourite.contextType = UserContext;
-
-export default withRouter(Favourite);
+export default Favourite;
