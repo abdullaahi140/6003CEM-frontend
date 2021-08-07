@@ -11,13 +11,13 @@ import DogCard from './dogcard.js';
  */
 function DogGrid(props) {
 	const { dogs, loading, updateParent } = props;
-	const cardList = dogs.map((dog) => (
+	const cardList = dogs ? dogs.map((dog) => (
 		<div style={{ padding: '1rem' }} key={dog.ID}>
 			<Col span={6}>
 				<DogCard {...dog} loading={loading} updateParent={updateParent} />
 			</Col>
 		</div>
-	));
+	)) : null;
 	return (
 		<>
 			<Row type="flex" justify="space-around">

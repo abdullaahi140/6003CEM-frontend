@@ -1,16 +1,15 @@
-import React from 'react';
-import { withRouter } from 'react-router-dom';
-
+import React, { useRef } from 'react';
+import { useMutation } from 'react-query';
 import {
 	Form, Input, Button, Upload, message
 } from 'antd';
+import axios from 'axios';
 
 import UploadOutlined from '@ant-design/icons/UploadOutlined';
-import PropTypes from 'prop-types';
 
-import { status, json } from '../utilities/requestHandlers.js';
 import jsonToForm from '../utilities/jsonToForm.js';
 import UserContext from '../contexts/user.js';
+import useLoginUser from '../hooks/useLoginUser.js';
 
 // setting up responsive layout
 const formItemLayout = {
@@ -65,118 +64,94 @@ const confirmRules = [
 /**
  * Registration form component for app signup.
  */
-class RegistrationForm extends React.Component {
-	constructor(props) {
-		super(props);
-		this.state = { redirect: false };
-		this.onFinish = this.onFinish.bind(this);
-	}
+function RegistrationForm() {
+	const { mutate: mutateLogin, isLoading: loginLoading } = useLoginUser();
+	const ref = useRef();
 
 	/**
 	 * Sumbit handler that posts the form response to the API
 	 * @param {Object} values - Object containing all the values entered in the form
 	 */
-	onFinish(values) {
-		fetch('http://localhost:3000/api/v1/users', {
-			method: 'POST',
-			body: jsonToForm(values)
-		})
-			.then(status)
-			.then(json)
-			.then((data) => this.login(data))
-			.catch((err) => {
-				json(err)
-					.then((data) => message.error(data.message));
-			});
-	}
-
-	/**
-	 * Authenticates the new user after registering
-	 * @param {object} registeredUser - The user object
-	 */
-	login(registeredUser) {
-		fetch('http://localhost:3000/api/v1/auth/login', {
+	function postUser(values) {
+		return axios('http://localhost:3000/api/v1/users', {
 			method: 'POST',
 			headers: {
-				Authorization: `Bearer ${registeredUser.accessToken.token}`
-			}
+				'Content-Type': 'multipart/form-data'
+			},
+			data: jsonToForm(values)
 		})
-			.then(status)
-			.then(json)
-			.then((user) => {
-				const { login } = this.context;
-				login(user);
-				this.setState({ redirect: true });
-			});
+			.then((response) => response.data);
 	}
 
-	render() {
-		const { redirect } = this.state;
-		const { location, history } = this.props;
-		const { from } = location.state || { from: { pathname: '/' } };
-		if (redirect) {
-			history.push(from.pathname);
-		}
+	const { mutate, isLoading } = useMutation(postUser, {
+		onSuccess: () => {
+			mutateLogin(ref.current.getFieldsValue(['username', 'password']));
+		},
+		onError: (error) => message.error(error.response.data.message)
+	});
 
-		return (
-			<Form {...formItemLayout} name="register" onFinish={this.onFinish} scrollToFirstError>
-				<Form.Item name="firstName" label="First Name">
-					<Input />
-				</Form.Item>
+	return (
+		<Form
+			{...formItemLayout}
+			name="register"
+			onFinish={mutate}
+			ref={ref}
+			scrollToFirstError
+		>
+			<Form.Item name="firstName" label="First Name">
+				<Input />
+			</Form.Item>
 
-				<Form.Item name="lastName" label="Last Name">
-					<Input />
-				</Form.Item>
+			<Form.Item name="lastName" label="Last Name">
+				<Input />
+			</Form.Item>
 
-				<Form.Item name="username" label="Username" rules={usernameRules}>
-					<Input />
-				</Form.Item>
+			<Form.Item name="username" label="Username" rules={usernameRules}>
+				<Input />
+			</Form.Item>
 
-				<Form.Item name="password" label="Password" rules={passwordRules} hasFeedback>
-					<Input.Password />
-				</Form.Item>
+			<Form.Item name="password" label="Password" rules={passwordRules} hasFeedback>
+				<Input.Password />
+			</Form.Item>
 
-				<Form.Item
-					name="confirm"
-					label="Confirm Password"
-					dependencies={['password']}
-					hasFeedback
-					rules={confirmRules}
+			<Form.Item
+				name="confirm"
+				label="Confirm Password"
+				dependencies={['password']}
+				hasFeedback
+				rules={confirmRules}
+			>
+				<Input.Password />
+			</Form.Item>
+
+			<Form.Item name="upload" label="Upload profile picture">
+				<Upload
+					listType="picture"
+					maxCount={1}
+					accept="image/*"
+					beforeUpload={() => false}
 				>
-					<Input.Password />
-				</Form.Item>
+					<Button icon={<UploadOutlined />}>Upload (Max: 1)</Button>
+				</Upload>
+			</Form.Item>
 
-				<Form.Item name="upload" label="Upload profile picture">
-					<Upload
-						listType="picture"
-						maxCount={1}
-						accept="image/*"
-						beforeUpload={() => false}
-					>
-						<Button icon={<UploadOutlined />}>Upload (Max: 1)</Button>
-					</Upload>
-				</Form.Item>
+			<Form.Item name="staffCode" label="Staff Code" rules={staffCodeRules}>
+				<Input />
+			</Form.Item>
 
-				<Form.Item name="staffCode" label="Staff Code" rules={staffCodeRules}>
-					<Input />
-				</Form.Item>
-
-				<Form.Item {...tailFormItemLayout}>
-					<Button type="primary" htmlType="submit">
-						Register
-					</Button>
-				</Form.Item>
-			</Form>
-		);
-	}
+			<Form.Item {...tailFormItemLayout}>
+				<Button
+					loading={isLoading || loginLoading}
+					type="primary"
+					htmlType="submit"
+				>
+					Register
+				</Button>
+			</Form.Item>
+		</Form>
+	);
 }
 
 RegistrationForm.contextType = UserContext;
-RegistrationForm.propTypes = {
-	/** Object containing info on the past, present and future location of the app  */
-	location: PropTypes.object.isRequired,
-	/** Object containing the history of URLs for the app */
-	history: PropTypes.object.isRequired
-};
 
-export default withRouter(RegistrationForm);
+export default RegistrationForm;
