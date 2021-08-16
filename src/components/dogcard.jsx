@@ -8,11 +8,11 @@ import PropTypes from 'prop-types';
 import EditFilled from '@ant-design/icons/EditFilled';
 import EditOutlined from '@ant-design/icons/EditOutlined';
 
-import useAuthentication from '../hooks/useAuthentication.js';
+import useAuthentication from '../hooks/useAuthentication';
 
-import DeleteIcon from './deleteicon.js';
-import FavIcon from './favicon.js';
-import Image from './image.js';
+import DeleteIcon from './deleteicon';
+import FavIcon from './favicon';
+import Image from './image';
 
 /**
  * Card component displaying a dog

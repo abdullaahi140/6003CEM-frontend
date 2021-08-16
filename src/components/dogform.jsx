@@ -10,8 +10,8 @@ import PlusOutlined from '@ant-design/icons/PlusOutlined';
 import SaveOutlined from '@ant-design/icons/SaveOutlined';
 import UploadOutlined from '@ant-design/icons/UploadOutlined';
 
-import jsonToForm from '../utilities/jsonToForm.js';
-import useAuthentication from '../hooks/useAuthentication.js';
+import jsonToForm from '../utilities/jsonToForm';
+import useAuthentication from '../hooks/useAuthentication';
 
 /**
  * Form component to add a new dog to a staff's shelter

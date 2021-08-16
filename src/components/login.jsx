@@ -3,7 +3,7 @@ import React from 'react';
 // import OauthPopup from 'react-oauth-popup';
 // import { GoogleLogin } from 'react-google-login';
 import { Form, Input, Button } from 'antd';
-import useLoginUser from '../hooks/useLoginUser.js';
+import useLoginUser from '../hooks/useLoginUser';
 
 // add some layout to keep the form organised on different screen sizes
 const formItemLayout = {

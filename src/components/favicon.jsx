@@ -4,7 +4,7 @@ import HeartOutlined from '@ant-design/icons/HeartOutlined';
 import HeartFilled from '@ant-design/icons/HeartFilled';
 import axios from 'axios';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
-import useAuthentication from '../hooks/useAuthentication.js';
+import useAuthentication from '../hooks/useAuthentication';
 
 /**
  * Icon component handling favouriting dogs

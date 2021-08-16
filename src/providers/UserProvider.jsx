@@ -4,9 +4,9 @@ import { useCookies } from 'react-cookie';
 import { message } from 'antd';
 import PropTypes from 'prop-types';
 import axios from 'axios';
-import UserContext from '../contexts/user.js';
-import userReducer from '../reducers/userReducer.js';
-import useLogoutCookies from '../hooks/useLogoutCookies.js';
+import UserContext from '../contexts/user';
+import userReducer from '../reducers/userReducer';
+import useLogoutCookies from '../hooks/useLogoutCookies';
 
 /**
  * Custom user provider with user details
@@ -74,6 +74,6 @@ function UserProvider({ children }) {
 }
 
 UserProvider.propTypes = {
-	children: PropTypes.arrayOf(PropTypes.element).isRequired
+	children: PropTypes.node.isRequired
 };
 export default UserProvider;

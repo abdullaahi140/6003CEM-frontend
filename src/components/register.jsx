@@ -7,9 +7,9 @@ import axios from 'axios';
 
 import UploadOutlined from '@ant-design/icons/UploadOutlined';
 
-import jsonToForm from '../utilities/jsonToForm.js';
-import UserContext from '../contexts/user.js';
-import useLoginUser from '../hooks/useLoginUser.js';
+import jsonToForm from '../utilities/jsonToForm';
+import UserContext from '../contexts/user';
+import useLoginUser from '../hooks/useLoginUser';
 
 // setting up responsive layout
 const formItemLayout = {

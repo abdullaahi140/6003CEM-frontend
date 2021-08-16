@@ -18,6 +18,6 @@ function QueryProvider({ children }) {
 }
 
 QueryProvider.propTypes = {
-	children: PropTypes.arrayOf(PropTypes.element).isRequired
+	children: PropTypes.node.isRequired
 };
 export default QueryProvider;

@@ -5,7 +5,7 @@ import {
 	Col, PageHeader, Row, Spin, Typography
 } from 'antd';
 import axios from 'axios';
-import Image from './image.js';
+import Image from './image';
 
 /**
  * Dog details view component for user to get more info about a dog.

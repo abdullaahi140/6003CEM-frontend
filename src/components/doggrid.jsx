@@ -1,7 +1,7 @@
 import React from 'react';
 import { Col, Row } from 'antd';
 import PropTypes from 'prop-types';
-import DogCard from './dogcard.js';
+import DogCard from './dogcard';
 
 /**
  * Functional component that takes a list of dogs and

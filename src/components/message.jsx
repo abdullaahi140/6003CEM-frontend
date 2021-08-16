@@ -8,8 +8,8 @@ import {
 import SendOutlined from '@ant-design/icons/SendOutlined';
 
 import axios from 'axios';
-import Comment from './comment.js';
-import useAuthentication from '../hooks/useAuthentication.js';
+import Comment from './comment';
+import useAuthentication from '../hooks/useAuthentication';
 
 /**
  * Component that displays a list of current messages and a form to send new messages.

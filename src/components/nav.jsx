@@ -1,10 +1,9 @@
-/* eslint-disable no-unused-vars */
 import React from 'react';
-import { Button, Menu, message } from 'antd';
+import { Menu, message } from 'antd';
 import { Link } from 'react-router-dom';
 import { useMutation } from 'react-query';
 import axios from 'axios';
-import useAuthentication from '../hooks/useAuthentication.js';
+import useAuthentication from '../hooks/useAuthentication';
 
 /**
  * Nav component that conditionally renders links depending on authentication

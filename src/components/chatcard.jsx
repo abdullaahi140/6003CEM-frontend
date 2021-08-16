@@ -6,8 +6,8 @@ import axios from 'axios';
 
 import PropTypes from 'prop-types';
 
-import DeleteIcon from './deleteicon.js';
-import useAuthentication from '../hooks/useAuthentication.js';
+import DeleteIcon from './deleteicon';
+import useAuthentication from '../hooks/useAuthentication';
 
 /**
  * Card component for a chat.

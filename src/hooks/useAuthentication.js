@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 import { useCookies } from 'react-cookie';
-import useLogoutCookies from './useLogoutCookies.js';
-import UserContext from '../contexts/user.js';
+import useLogoutCookies from './useLogoutCookies';
+import UserContext from '../contexts/user';
 
 /**
  * Custom hook to provide authentication for the application

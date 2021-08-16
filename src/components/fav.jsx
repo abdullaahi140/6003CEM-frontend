@@ -2,8 +2,8 @@ import React from 'react';
 import { PageHeader } from 'antd';
 import { useQuery } from 'react-query';
 import axios from 'axios';
-import useAuthentication from '../hooks/useAuthentication.js';
-import DogGrid from './doggrid.js';
+import useAuthentication from '../hooks/useAuthentication';
+import DogGrid from './doggrid';
 
 /**
  * Favourite component showing list of favourite dogs

@@ -6,8 +6,8 @@ import {
 } from 'antd';
 import axios from 'axios';
 
-import ChatCard from './chatcard.js';
-import useAuthentication from '../hooks/useAuthentication.js';
+import ChatCard from './chatcard';
+import useAuthentication from '../hooks/useAuthentication';
 
 /**
  * Chat component with list of chats linking to pages with all messages

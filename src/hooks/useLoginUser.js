@@ -4,7 +4,7 @@ import { useMutation } from 'react-query';
 import { message } from 'antd';
 import axios from 'axios';
 
-import useAuthentication from './useAuthentication.js';
+import useAuthentication from './useAuthentication';
 
 /**
  * Custom hook to login a user using a user password.

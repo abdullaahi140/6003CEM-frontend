@@ -4,9 +4,9 @@ import { useQuery } from 'react-query';
 import { PageHeader } from 'antd';
 import axios from 'axios';
 
-import DogGrid from './doggrid.js';
-import Page from './pagination.js';
-import SearchBar from './search.js';
+import DogGrid from './doggrid';
+import Page from './pagination';
+import SearchBar from './search';
 
 /**
  * Home page component with list of paginated dogs and search

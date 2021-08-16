@@ -5,9 +5,9 @@ import axios from 'axios';
 
 import PropTypes from 'prop-types';
 
-import DeleteIcon from './deleteicon.js';
-import Image from './image.js';
-import useAuthentication from '../hooks/useAuthentication.js';
+import DeleteIcon from './deleteicon';
+import Image from './image';
+import useAuthentication from '../hooks/useAuthentication';
 
 /**
  * Component that renders a single message from a chat.
