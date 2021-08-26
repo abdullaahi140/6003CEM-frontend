@@ -4,12 +4,17 @@ import DeleteOutlined from '@ant-design/icons/DeleteOutlined';
 import QuestionCircleOutlined from '@ant-design/icons/QuestionCircleOutlined';
 import PropTypes from 'prop-types';
 import { Popconfirm } from 'antd';
+import { UseMutateFunction } from 'react-query';
+
+interface Prop {
+	handleConfirm: (() => void) | UseMutateFunction<unknown, unknown, unknown, unknown>;
+}
 
 /**
  * Icon that handles deletion of a resource. Asks the user to confirm deletion
  * before going ahead.
  */
-function DeleteIcon(props) {
+function DeleteIcon(props: Prop): JSX.Element {
 	const [hover, setHover] = useState(false);
 	const { handleConfirm } = props;
 	const Icon = (hover) ? DeleteFilled : DeleteOutlined;
@@ -31,7 +36,7 @@ function DeleteIcon(props) {
 
 DeleteIcon.propTypes = {
 	/** Function from parent that deletes the resource */
-	handleConfirm: PropTypes.func.isRequired
+	handleConfirm: PropTypes.func.isRequired,
 };
 
 export default DeleteIcon;

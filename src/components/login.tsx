@@ -8,25 +8,25 @@ import useLoginUser from '../hooks/useLoginUser';
 // add some layout to keep the form organised on different screen sizes
 const formItemLayout = {
 	labelCol: { xs: { span: 24 }, sm: { span: 6 } },
-	wrapperCol: { xs: { span: 24 }, sm: { span: 12 } }
+	wrapperCol: { xs: { span: 24 }, sm: { span: 12 } },
 };
 const tailFormItemLayout = {
-	wrapperCol: { xs: { span: 24, offset: 0 }, sm: { span: 16, offset: 6 } }
+	wrapperCol: { xs: { span: 24, offset: 0 }, sm: { span: 16, offset: 6 } },
 };
 
 // define validation rules for the form fields
 const passwordRules = [
-	{ required: true, message: 'Please input your password!' }
+	{ required: true, message: 'Please input your password!' },
 ];
 
 const usernameRules = [
-	{ required: true, message: 'Please input your username!', whitespace: true }
+	{ required: true, message: 'Please input your username!', whitespace: true },
 ];
 
 /**
  * Login form component for app signup.
  */
-function LoginForm() {
+function LoginForm(): JSX.Element {
 	const { mutate, isLoading } = useLoginUser();
 
 	/**

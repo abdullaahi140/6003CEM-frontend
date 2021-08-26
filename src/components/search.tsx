@@ -4,10 +4,15 @@ import { useQuery } from 'react-query';
 import PropTypes from 'prop-types';
 import axios from 'axios';
 
+interface Props {
+	onSearch: (value: string) => void;
+	onSelect: (value: string) => void;
+}
+
 /**
  * Search component that updates the list of dogs shown.
  */
-function SearchBar(props) {
+function SearchBar(props: Props): JSX.Element {
 	const { Search } = Input;
 	const { Option } = Select;
 	const { onSelect, onSearch } = props;
@@ -23,7 +28,7 @@ function SearchBar(props) {
 
 	const { data, isSuccess } = useQuery('breeds', fetchBreeds);
 
-	const breedOptions = isSuccess && data.map((breed, index) => (
+	const breedOptions = isSuccess && data.map((breed: string, index: number) => (
 		// eslint-disable-next-line react/no-array-index-key
 		<Option key={index} value={breed}>{breed}</Option>
 	));
@@ -54,7 +59,7 @@ SearchBar.propTypes = {
 	/** Function to update dogs depending on the value in Input */
 	onSearch: PropTypes.func.isRequired,
 	/** Function to update dogs depending on the value in Select */
-	onSelect: PropTypes.func.isRequired
+	onSelect: PropTypes.func.isRequired,
 };
 
 export default SearchBar;

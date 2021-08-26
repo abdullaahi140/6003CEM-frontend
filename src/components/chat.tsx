@@ -1,35 +1,41 @@
 import React from 'react';
-import { useMutation, useQuery } from 'react-query';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { useHistory } from 'react-router-dom';
 import {
-	Col, PageHeader, Row, Form, Select, Button, message
+	Col, PageHeader, Row, Form, Select, Button, message,
 } from 'antd';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 
 import ChatCard from './chatcard';
 import useAuthentication from '../hooks/useAuthentication';
+import { Chat as IChat, ChatResponse, Shelter } from '../react-app-env';
+
+interface QueryParam {
+	shelter: string;
+}
 
 /**
  * Chat component with list of chats linking to pages with all messages
  * for a particular chat.
  */
-function Chat() {
+function Chat(): JSX.Element {
 	const { state: { user, accessToken } } = useAuthentication();
 	const history = useHistory();
+	const queryClient = useQueryClient();
 
 	/**
 	 * Fetch list of chats depending on the user's role
 	 */
 	function fetchChats() {
-		const { role, locationID } = user;
+		const { role, locationID } = { ...user };
 		let url = 'http://localhost:3000/api/v1/chats';
 		if (role !== 'user') {
 			url = `${url}/location/${locationID}`;
 		}
 		return axios(url, {
 			headers: {
-				Authorization: `Bearer ${accessToken.token}`
-			}
+				Authorization: `Bearer ${accessToken?.token}`,
+			},
 		})
 			.then((response) => response.data);
 	}
@@ -42,8 +48,8 @@ function Chat() {
 	function fetchShelters() {
 		return axios('http://localhost:3000/api/v1/locations', {
 			headers: {
-				Authorization: `Bearer ${accessToken.token}`
-			}
+				Authorization: `Bearer ${accessToken?.token}`,
+			},
 		})
 			.then((response) => response.data);
 	}
@@ -53,26 +59,32 @@ function Chat() {
 	/**
 	 * Post a request to start a new chat with a shelter
 	 */
-	function postChat(values) {
-		return axios(`http://localhost:3000/api/v1/chats/${values.shelter}`, {
+	function postChat({ shelter }: QueryParam) {
+		return axios(`http://localhost:3000/api/v1/chats/${shelter}`, {
 			method: 'POST',
 			headers: {
-				Authorization: `Bearer ${accessToken.token}`
-			}
+				Authorization: `Bearer ${accessToken?.token}`,
+			},
 		})
-			.then((response) => response.data);
+			.then((response) => response.data)
+			.catch((_error) => message.error('Chat could not be created'));
 	}
 
-	const { mutate } = useMutation(postChat, {
-		onSuccess: (data) => history.push(`/messages/${data.ID}`),
-		onError: () => message.error('Chat could not be created')
-	});
+	const { mutate } = useMutation<ChatResponse, AxiosError, QueryParam>(
+		postChat, {
+			onSuccess: (data) => {
+				queryClient.invalidateQueries('shelters');
+				history.push(`/messages/${data.ID}`);
+			},
+			// onError: () => message.error('Chat could not be created'),
+			// do we call expression for onError?
+		});
 
-	const shelterList = shelterSuccess && shelters.map((shelter) => (
+	const shelterList = shelterSuccess && shelters.map((shelter: Shelter) => (
 		<Select.Option key={shelter.ID} value={shelter.ID}>{shelter.name}</Select.Option>
 	));
 
-	const cardList = chatSuccess && chats.map((chat) => {
+	const cardList = chatSuccess && chats.map((chat: IChat) => {
 		const dateCreated = new Date(Date.parse(chat.dateCreated)).toLocaleString();
 		return (
 			<div style={{ paddingTop: '1rem', paddingRight: '1rem' }} key={chat.ID}>
@@ -81,9 +93,7 @@ function Chat() {
 						chatID={chat.ID}
 						title={chat.locationName}
 						dateCreated={dateCreated}
-					>
-						<p>{`Created: ${dateCreated}`}</p>
-					</ChatCard>
+					/>
 				</Col>
 			</div>
 		);
@@ -106,7 +116,6 @@ function Chat() {
 				>
 					<Form.Item label="Start a new chat" name="shelter">
 						<Select
-							name="shelter"
 							style={{ width: 200 }}
 							disabled={(shelters.length < 1)}
 						>
@@ -125,7 +134,7 @@ function Chat() {
 				</Form>
 			)}
 
-			<Row type="flex" justify="start">
+			<Row justify="start">
 				{chatSuccess && cardList}
 			</Row>
 		</div>

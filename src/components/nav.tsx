@@ -2,37 +2,40 @@ import React from 'react';
 import { Menu, message } from 'antd';
 import { Link } from 'react-router-dom';
 import { useMutation } from 'react-query';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import useAuthentication from '../hooks/useAuthentication';
+import { LogoutResponse } from '../react-app-env';
 
 /**
  * Nav component that conditionally renders links depending on authentication
  * state and user role.
  */
-function Nav() {
+function Nav(): JSX.Element {
 	const { state, logout } = useAuthentication();
 
 	/**
 	 * Post request to API when user logs out
 	 */
-	function handleLogout() {
-		axios('http://localhost:3000/api/v1/auth/logout', {
+	function handleLogout(): Promise<LogoutResponse> {
+		return axios('http://localhost:3000/api/v1/auth/logout', {
 			method: 'POST',
 			headers: {
-				Authorization: `Bearer ${state.accessToken.token}`
-			}
-		});
+				Authorization: `Bearer ${state?.accessToken?.token}`,
+			},
+		})
+			.then((response) => response.data);
 	}
 
-	const { mutate } = useMutation(handleLogout, {
-		onSuccess: () => {
-			logout();
-			message.success('Successfully logged out');
-		},
-		onError: (error) => {
-			console.error(error.response.config.method);
-		}
-	});
+	const { mutate } = useMutation<LogoutResponse, AxiosError>(
+		handleLogout, {
+			onSuccess: () => {
+				logout();
+				message.success('Successfully logged out');
+			},
+			onError: (error) => {
+				console.error(error.response?.config.method);
+			},
+		});
 
 	/**
 	 * Function that adds links to the nav depending on authentication state
@@ -45,7 +48,7 @@ function Nav() {
 		let loginNav;
 
 		try {
-			if (user.role !== 'user') {
+			if (user?.role !== 'user') {
 				dogNav = (
 					<Menu.Item key="4">
 						<Link to="/dog_form">Add a dog</Link>

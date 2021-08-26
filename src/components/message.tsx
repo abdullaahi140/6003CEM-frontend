@@ -3,21 +3,22 @@ import { useHistory, useParams } from 'react-router-dom';
 import { useMutation, useQuery } from 'react-query';
 
 import {
-	Button, Input, List, PageHeader, Form
+	Button, Input, List, PageHeader, Form,
 } from 'antd';
 import SendOutlined from '@ant-design/icons/SendOutlined';
 
 import axios from 'axios';
 import Comment from './comment';
 import useAuthentication from '../hooks/useAuthentication';
+import { Message as IMessage } from '../react-app-env';
 
 /**
  * Component that displays a list of current messages and a form to send new messages.
  */
-function Message() {
+function Message(): JSX.Element {
 	const { state: { accessToken } } = useAuthentication();
-	const { chatID } = useParams();
-	const { history } = useHistory();
+	const { chatID } = useParams<{ chatID: string }>();
+	const history = useHistory();
 	const [value, setValue] = useState('');
 
 	/**
@@ -26,8 +27,8 @@ function Message() {
 	function fetchChat() {
 		return axios(`http://localhost:3000/api/v1/chats/${chatID}`, {
 			headers: {
-				Authorization: `Bearer ${accessToken.token}`
-			}
+				Authorization: `Bearer ${accessToken?.token}`,
+			},
 		})
 			.then((response) => response.data);
 	}
@@ -40,16 +41,16 @@ function Message() {
 	function fetchMessages() {
 		return axios(`http://localhost:3000/api/v1/messages/${chatID}`, {
 			headers: {
-				Authorization: `Bearer ${accessToken.token}`
-			}
+				Authorization: `Bearer ${accessToken?.token}`,
+			},
 		})
 			.then((response) => response.data);
 	}
 
 	const { data: messages, isSuccess: msgSuccess } = useQuery(
 		['messages', chatID], fetchMessages, {
-			refetchInterval: 1000
-		}
+			refetchInterval: 1000,
+		},
 	);
 
 	/**
@@ -57,15 +58,16 @@ function Message() {
  */
 	function postMessage() {
 		if (!value) {
-			return null; // don't post if text area is empty
+			// don't post if text area is empty
+			return Promise.reject('Cannot send empty message');
 		}
 
 		return axios(`http://localhost:3000/api/v1/messages/${chatID}`, {
 			method: 'POST',
 			data: { message: value },
 			headers: {
-				Authorization: `Bearer ${accessToken.token}`
-			}
+				Authorization: `Bearer ${accessToken?.token}`,
+			},
 		});
 	}
 
@@ -73,7 +75,7 @@ function Message() {
 		onSuccess: () => {
 			setValue('');
 			window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' }); // scroll to bottom
-		}
+		},
 	});
 
 	return (
@@ -93,12 +95,9 @@ function Message() {
 					header={`${messages.length} messages`}
 					itemLayout="horizontal"
 					dataSource={messages}
-					renderItem={(message) => (
+					renderItem={(message: IMessage) => (
 						<li>
-							<Comment
-								{...message}
-								updateParent={fetchMessages}
-							/>
+							<Comment {...message} />
 						</li>
 					)}
 				/>

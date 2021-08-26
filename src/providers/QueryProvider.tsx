@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
  * @param {React.PropsWithChildren} children - arrays of descendants elements in component tree
  * @returns Context provider with instantiated react-query client
  */
-function QueryProvider({ children }) {
+function QueryProvider({ children }: { children: React.ReactNode }): JSX.Element {
 	const queryClient = new QueryClient();
 
 	return (
@@ -18,6 +18,6 @@ function QueryProvider({ children }) {
 }
 
 QueryProvider.propTypes = {
-	children: PropTypes.node.isRequired
+	children: PropTypes.node.isRequired,
 };
 export default QueryProvider;

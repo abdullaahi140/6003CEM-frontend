@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useMutation, useQuery } from 'react-query';
 import {
-	Button, Form, Input, InputNumber, Layout, message, PageHeader, Select, TreeSelect, Upload
+	Button, Form, Input, InputNumber, Layout, message, PageHeader, Select, TreeSelect, Upload,
 } from 'antd';
 import axios from 'axios';
 
@@ -12,21 +12,25 @@ import UploadOutlined from '@ant-design/icons/UploadOutlined';
 
 import jsonToForm from '../utilities/jsonToForm';
 import useAuthentication from '../hooks/useAuthentication';
+import { DogBody } from '../react-app-env';
+
+interface DogBreeds {
+	[key: string] : string[] | [];
+}
 
 /**
  * Form component to add a new dog to a staff's shelter
  */
-function DogForm() {
+function DogForm(): JSX.Element {
 	const { state: { user, accessToken } } = useAuthentication();
-	const { dogID } = useParams();
-	const [value, setValue] = useState();
+	const { dogID } = useParams<{ dogID: string }>();
+	const [value, setValue] = useState('');
 	const [form] = Form.useForm();
 
-	function handleSelect(selectValue) {
+	function handleSelect(selectValue: string) {
 		let dogBreed = selectValue.split(' ').reverse();
 		dogBreed = dogBreed.map((item) => item.toLowerCase());
-		dogBreed = dogBreed.join('/');
-		setValue(dogBreed);
+		setValue(dogBreed.join('/'));
 	}
 
 	/**
@@ -40,8 +44,8 @@ function DogForm() {
 
 	const { data: dogImgURL, isSuccess: dogImgURlSuccess } = useQuery(
 		['dogImage', value], fetchDogImage, {
-			enabled: value !== undefined
-		}
+			enabled: value !== undefined,
+		},
 	);
 
 	/**
@@ -53,25 +57,25 @@ function DogForm() {
 	}
 
 	useQuery(['dog', dogID], fetchDog, {
-		enabled: dogID > 0,
-		onSuccess: (data) => form.setFieldsValue(data)
+		enabled: parseInt(dogID, 10) > 0,
+		onSuccess: (data) => form.setFieldsValue(data),
 	});
 
 	/**
 	 * Fetches the staff's shelter to set name as the header.
 	 */
 	function fetchShelter() {
-		return axios(`http://localhost:3000/api/v1/locations/${user.locationID}`, {
+		return axios(`http://localhost:3000/api/v1/locations/${user?.locationID}`, {
 			headers: {
-				Authorization: `Bearer ${accessToken.token}`
-			}
+				Authorization: `Bearer ${accessToken?.token}`,
+			},
 		})
 			.then((response) => response.data);
 	}
 
 	const { data: shelter, isSuccess: shelterSuccess } = useQuery(
-		['shelter', user.locationID],
-		fetchShelter
+		['shelter', user?.locationID],
+		fetchShelter,
 	);
 
 	/**
@@ -88,21 +92,25 @@ function DogForm() {
 	 * Post the form to either add or update a dog.
 	 * @param {Object} values - Values for field in the submitted form
 	 */
-	function postOrPutDog(values) {
+	function postOrPutDog(values: DogBody) {
 		let url = 'http://localhost:3000/api/v1/dogs';
 		url = (dogID) ? `${url}/${dogID}` : url;
 		return axios(url, {
 			method: (dogID) ? 'PUT' : 'POST',
 			headers: {
-				Authorization: `Bearer ${accessToken.token}`
+				Authorization: `Bearer ${accessToken?.token}`,
 			},
-			data: jsonToForm(values)
+			data: jsonToForm(values),
 		});
 	}
 
 	const { mutate } = useMutation(postOrPutDog, {
-		onSuccess: () => form.resetFields(),
-		onError: () => message.error('You can not add/update this dog')
+		onSuccess: () => {
+			form.resetFields();
+		},
+		onError: () => {
+			message.error('You can not add/update this dog');
+		},
 	});
 
 	/**
@@ -110,22 +118,21 @@ function DogForm() {
 	 * @param {string} string - The string to be capitilised
 	 * @returns A string with the 1st letter capitilised
 	 */
-	function capitalise(string) {
+	function capitalise(string: string) {
 		return string.charAt(0).toUpperCase() + string.slice(1);
 	}
 
 	const breedList = [];
 	if (breedsSuccess) {
-		// eslint-disable-next-line no-restricted-syntax
-		for (const [key, breed] of Object.entries(breeds)) {
-			const children = breed.map((child) => ({
+		for (const [key, breed] of Object.entries(breeds as DogBreeds)) {
+			const children = breed.map((child: string) => ({
 				title: `${capitalise(child)} ${capitalise(key)}`,
-				value: `${capitalise(child)} ${capitalise(key)}`
+				value: `${capitalise(child)} ${capitalise(key)}`,
 			}));
 			const treeNode = {
 				title: capitalise(key),
 				value: capitalise(key),
-				children
+				children,
 			};
 			breedList.push(treeNode);
 		}
@@ -134,11 +141,11 @@ function DogForm() {
 	// responsive layout for form
 	const formItemLayout = {
 		labelCol: { xs: { span: 12 }, sm: { span: 3 } },
-		wrapperCol: { xs: { span: 24 }, sm: { span: 12 } }
+		wrapperCol: { xs: { span: 24 }, sm: { span: 12 } },
 	};
 
 	const tailFormItemLayout = {
-		wrapperCol: { xs: { span: 24, offset: 0 }, sm: { span: 16, offset: 3 } }
+		wrapperCol: { xs: { span: 24, offset: 0 }, sm: { span: 16, offset: 3 } },
 	};
 
 	// Form rules
@@ -146,25 +153,25 @@ function DogForm() {
 		required: true,
 		message: 'Name must be 2 characters minimum!',
 		whitespace: true,
-		min: 2
+		min: 2,
 	}];
 	const ageRules = [{
 		required: true,
-		message: 'You must provide an age!'
+		message: 'You must provide an age!',
 	}];
 	const genderRules = [{
 		required: true,
-		message: 'You must provide the gender!'
+		message: 'You must provide the gender!',
 	}];
 	const breedRules = [{
 		required: true,
-		message: 'You must provide the breed of the dog!'
+		message: 'You must provide the breed of the dog!',
 	}];
 	const descriptionRules = [{
 		required: true,
 		message: 'Description must be 10 characters minimum!',
 		whitespace: true,
-		min: 10
+		min: 10,
 	}];
 
 	return (

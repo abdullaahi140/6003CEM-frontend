@@ -2,7 +2,7 @@ import React from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { useQuery } from 'react-query';
 import {
-	Col, PageHeader, Row, Spin, Typography
+	Col, PageHeader, Row, Spin, Typography,
 } from 'antd';
 import axios from 'axios';
 import Image from './image';
@@ -10,9 +10,9 @@ import Image from './image';
 /**
  * Dog details view component for user to get more info about a dog.
  */
-function DogView() {
+function DogView(): JSX.Element {
 	const history = useHistory();
-	const { dogID } = useParams();
+	const { dogID } = useParams<{ dogID: string }>();
 
 	/**
 	 * Fetch dog using ID from URL parameter.

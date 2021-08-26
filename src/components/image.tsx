@@ -1,29 +1,37 @@
-import React from 'react';
+import React, { CSSProperties } from 'react';
 import PropTypes from 'prop-types';
 import { useQuery } from 'react-query';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
+
+interface ImageProps {
+	ID: number;
+	alt: string;
+	style?: CSSProperties | undefined;
+	onClick?: () => void | null;
+
+}
 
 /**
  * Component that fetches an image from the API using the imageID
  */
-function Image(props) {
+function Image(props: ImageProps): JSX.Element {
 	const {
-		ID, alt, style, onClick
+		ID, alt, style, onClick,
 	} = props;
 
-	function fetchImage({ queryKey }) {
-		const [_key, imageID] = queryKey;
+	function fetchImage(imageID: number) {
 		return axios(`http://localhost:3000/api/v1/images/${imageID}`, {
-			responseType: 'blob'
+			responseType: 'blob',
 		}).then((response) => URL.createObjectURL(response.data));
 	}
 
-	const { data } = useQuery(['image', ID], fetchImage, {
-		onError: ((error) => console.error(error, `Error fetching image ID: ${ID}`))
-	});
+	const { data } = useQuery<string, AxiosError>(
+		['image', ID],
+		() => fetchImage(ID), {
+			onError: ((error) => console.error(error, `Error fetching image ID: ${ID}`)),
+		});
 
 	return (
-		// eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
 		<img
 			src={data}
 			alt={alt}
@@ -42,11 +50,11 @@ Image.propTypes = {
 	/** CSS style for image */
 	style: PropTypes.object,
 	/** onClick handler from parent component */
-	onClick: PropTypes.func
+	onClick: PropTypes.func,
 };
 Image.defaultProps = {
 	style: {},
-	onClick: (() => null)
+	onClick: (() => null),
 };
 
 export default Image;

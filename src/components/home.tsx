@@ -8,12 +8,19 @@ import DogGrid from './doggrid';
 import Page from './pagination';
 import SearchBar from './search';
 
+interface QueryParams {
+	page: number;
+	name: string;
+	breed: string
+}
+
 /**
  * Home page component with list of paginated dogs and search
  */
-function Home() {
-	const params = useParams();
-	const [page, setPage] = useState((params.page > 1) ? params.page : 1);
+function Home(): JSX.Element {
+	const params = useParams<{ page: string }>();
+	const initialPage = (parseInt(params.page, 10) > 1) ? parseInt(params.page, 10) : 1;
+	const [page, setPage] = useState(initialPage);
 	const [name, setName] = useState('');
 	const [breed, setBreed] = useState('');
 	const history = useHistory();
@@ -22,7 +29,7 @@ function Home() {
 	 * Handles page change and dictates page number to Pagination component
 	 * @param {Number} changePage - The page number to adjust pagination
 	 */
-	function handleChange(changePage) {
+	function handleChange(changePage: number) {
 		setPage(changePage);
 		window.scrollTo({ top: 0, behavior: 'smooth' }); // scroll to top
 		history.push(`/${changePage}`);
@@ -34,16 +41,18 @@ function Home() {
 	 * @param {number} name - The name of the dog
 	 * @param {number} breed - The breed of the dog
 	 */
-	function fetchDogs({ queryKey }) {
-		const [_key, param] = queryKey;
+	function fetchDogs(param: QueryParams) {
 		return axios(
-			`http://localhost:3000/api/v1/dogs?page=${param.page}&name=${param.name}&breed=${param.breed}`
+			`http://localhost:3000/api/v1/dogs?page=${param.page}&name=${param.name}&breed=${param.breed}`,
 		)
 			.then((response) => response.data)
 			.catch((err) => console.error(err, 'Error fetching all dogs'));
 	}
 
-	const { data, isLoading, isSuccess } = useQuery(['dogs', { page, name, breed }], fetchDogs);
+	const { data, isLoading, isSuccess } = useQuery(
+		['dogs', { page, name, breed }],
+		() => fetchDogs({ page, name, breed }),
+	);
 
 	return (
 		<div className="site-layout-content">
@@ -59,7 +68,7 @@ function Home() {
 					onSelect={(value = '') => setBreed(value)}
 				/>
 			</div>
-			{isSuccess && <DogGrid dogs={data?.dogs} loading={isLoading} updateParent={fetchDogs} />}
+			{isSuccess && <DogGrid dogs={data?.dogs} loading={isLoading} />}
 			<div style={{ display: 'flex', justifyContent: 'center' }}>
 				<Page
 					name={name}

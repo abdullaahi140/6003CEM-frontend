@@ -4,23 +4,30 @@ import { Pagination } from 'antd';
 import PropTypes from 'prop-types';
 import axios from 'axios';
 
+interface Props {
+	name: string;
+	breed: string;
+	page: number;
+	onChange: (changePage: number) => void;
+}
+
 /** Pagination component that controller which page of dogs to show. */
-function Page(props) {
+function Page(props: Props): JSX.Element {
 	const {
-		page, name, breed, onChange
+		page, name, breed, onChange,
 	} = props;
 
 	/** Function that fetches the number of dogs depending on search terms */
-	function fetchCount({ queryKey }) {
-		const [_key, param] = queryKey;
+	function fetchCount(param: Omit<Props, 'onChange' | 'page'>) {
 		return axios(
-			`http://localhost:3000/api/v1/dogs/count?name=${param.name}&breed=${param.breed}`
+			`http://localhost:3000/api/v1/dogs/count?name=${param.name}&breed=${param.breed}`,
 		)
 			.then((response) => response.data)
 			.catch((err) => console.error(err, 'Error fetching dog count'));
 	}
 
-	const { data } = useQuery(['dogCount', { name, breed }], fetchCount);
+	const { data } = useQuery(['dogCount', { name, breed }],
+		() => fetchCount({ name, breed }));
 
 	return (
 		<Pagination
@@ -42,7 +49,7 @@ Page.propTypes = {
 	/** The current page of dogs */
 	page: PropTypes.number.isRequired,
 	/** onChange handler from parent component */
-	onChange: PropTypes.func.isRequired
+	onChange: PropTypes.func.isRequired,
 };
 
 export default Page;

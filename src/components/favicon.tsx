@@ -6,10 +6,14 @@ import axios from 'axios';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import useAuthentication from '../hooks/useAuthentication';
 
+interface Param {
+	method: 'POST' | 'DELETE';
+}
+
 /**
  * Icon component handling favouriting dogs
  */
-function FavIcon({ dogID }) {
+function FavIcon({ dogID }: { dogID: number }): JSX.Element {
 	const { state: { accessToken } } = useAuthentication();
 	const queryClient = useQueryClient();
 
@@ -21,22 +25,22 @@ function FavIcon({ dogID }) {
 		return axios(`http://localhost:3000/api/v1/dogs/favs/${dogID}`, {
 			method: 'GET',
 			headers: {
-				Authorization: `Bearer ${accessToken.token}`
-			}
+				Authorization: `Bearer ${accessToken?.token}`,
+			},
 		})
 			.then((response) => response.data);
 	}
 
 	const { data, isSuccess } = useQuery(['fav', dogID], fetchFav, {
-		onError: ((error) => console.error(error, `Could not fetch favourite on dog ID ${dogID}`))
+		onError: ((error) => console.error(error, `Could not fetch favourite on dog ID ${dogID}`)),
 	});
 
-	function postOrDelFav({ method, _ID }) {
+	function postOrDelFav({ method }: Param) {
 		return axios(`http://localhost:3000/api/v1/dogs/favs/${dogID}`, {
 			method,
 			headers: {
-				Authorization: `Bearer ${accessToken.token}`
-			}
+				Authorization: `Bearer ${accessToken?.token}`,
+			},
 		})
 			.then((response) => response.data);
 	}
@@ -46,7 +50,7 @@ function FavIcon({ dogID }) {
 			queryClient.setQueryData(['fav', dogID], mutationResp);
 			queryClient.refetchQueries('favs');
 		}),
-		onError: ((error) => console.error(error))
+		onError: ((error) => console.error(error)),
 	});
 
 	let Icon = HeartOutlined;
@@ -57,11 +61,11 @@ function FavIcon({ dogID }) {
 	}
 
 	function handleClick() {
-		const params = { method: 'POST' };
+		const param: Param = { method: 'POST' };
 		if (isSuccess && data.favourite) {
-			params.method = 'DELETE';
+			param.method = 'DELETE';
 		}
-		mutate(params);
+		mutate(param);
 	}
 
 	return (
@@ -71,7 +75,7 @@ function FavIcon({ dogID }) {
 
 FavIcon.propTypes = {
 	/** Dog ID */
-	dogID: PropTypes.number.isRequired
+	dogID: PropTypes.number.isRequired,
 };
 
 export default FavIcon;

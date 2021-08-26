@@ -9,10 +9,16 @@ import PropTypes from 'prop-types';
 import DeleteIcon from './deleteicon';
 import useAuthentication from '../hooks/useAuthentication';
 
+interface Props {
+	chatID: number;
+	title: string;
+	dateCreated: string;
+}
+
 /**
  * Card component for a chat.
  */
-function ChatCard(props) {
+function ChatCard(props: Props): JSX.Element {
 	const { state: { accessToken } } = useAuthentication();
 	const { chatID, title, dateCreated } = props;
 	const queryClient = useQueryClient();
@@ -24,8 +30,8 @@ function ChatCard(props) {
 		return axios(`http://localhost:3000/api/v1/chats/${chatID}`, {
 			method: 'DELETE',
 			headers: {
-				Authorization: `Bearer ${accessToken.token}`
-			}
+				Authorization: `Bearer ${accessToken?.token}`,
+			},
 		});
 	}
 
@@ -33,7 +39,7 @@ function ChatCard(props) {
 		onSuccess: () => {
 			queryClient.refetchQueries('chats');
 			queryClient.refetchQueries('shelters');
-		}
+		},
 	});
 
 	return (
@@ -41,7 +47,6 @@ function ChatCard(props) {
 			style={{ width: 320 }}
 			hoverable
 			size="small"
-			chatID={chatID}
 			title={<Link style={{ color: 'black' }} to={`/messages/${chatID}`}>{title}</Link>}
 			extra={<DeleteIcon handleConfirm={mutate} />}
 		>
@@ -57,7 +62,7 @@ ChatCard.propTypes = {
 	/** Title of the chat */
 	title: PropTypes.string.isRequired,
 	/** Datetime of the chat being created */
-	dateCreated: PropTypes.string.isRequired
+	dateCreated: PropTypes.string.isRequired,
 };
 
 export default ChatCard;

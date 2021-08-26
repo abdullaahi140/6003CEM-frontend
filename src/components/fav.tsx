@@ -8,14 +8,14 @@ import DogGrid from './doggrid';
 /**
  * Favourite component showing list of favourite dogs
  */
-function Favourite() {
+function Favourite(): JSX.Element {
 	const { state: { accessToken } } = useAuthentication();
 
 	function fetchFavDogs() {
 		return axios('http://localhost:3000/api/v1/dogs/favs', {
 			headers: {
-				Authorization: `Bearer ${accessToken.token}`
-			}
+				Authorization: `Bearer ${accessToken?.token}`,
+			},
 		})
 			.then((response) => response.data)
 			.catch((err) => console.error(err, 'Error fetching favourite dogs'));
