@@ -2,7 +2,6 @@ import React from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { Layout } from 'antd';
 import './App.css';
-import { ReactQueryDevtools } from 'react-query/devtools';
 
 import Nav from './components/nav';
 import Home from './components/home';
@@ -48,7 +47,6 @@ function App(): JSX.Element {
 
 						<Layout.Footer style={{ textAlign: 'center' }}>Dog Shelter</Layout.Footer>
 					</Layout>
-					<ReactQueryDevtools />
 				</UserProvider>
 			</QueryProvider>
 		</Router>
