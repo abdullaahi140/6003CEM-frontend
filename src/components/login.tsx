@@ -33,7 +33,7 @@ function LoginForm(): JSX.Element {
 	 * Function that fetch Google auth
 	 */
 	/* function handleGoogle() {
-		fetch('http://localhost:3000/api/v1/auth/google/callback')
+		fetch(`${process.env.REACT_APP_API_URL}/api/v1/auth/google/callback`)
 			.then(status)
 			.then(json)
 			.then((user) => {
@@ -66,7 +66,7 @@ function LoginForm(): JSX.Element {
 				</Button>
 
 				{/* <OauthPopup
-					url="http://localhost:3000/api/v1/auth/google/callback"
+					url=`${process.env.REACT_APP_API_URL}/api/v1/auth/google/callback`
 					onCode={(code, params) => {
 						// eslint-disable-next-line no-console
 						console.log(code);

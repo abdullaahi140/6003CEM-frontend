@@ -17,7 +17,7 @@ function Nav(): JSX.Element {
 	 * Post request to API when user logs out
 	 */
 	function handleLogout(): Promise<LogoutResponse> {
-		return axios('http://localhost:3000/api/v1/auth/logout', {
+		return axios(`${process.env.REACT_APP_API_URL}/api/v1/auth/logout`, {
 			method: 'POST',
 			headers: {
 				Authorization: `Bearer ${state?.accessToken?.token}`,

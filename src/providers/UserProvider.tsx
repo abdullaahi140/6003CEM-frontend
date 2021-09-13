@@ -28,7 +28,7 @@ function UserProvider({ children }: { children: React.ReactNode }): JSX.Element 
 	const { logout } = useLogoutCookies(dispatch);
 	const refreshAccessToken = (async () => {
 		try {
-			const { data } = await axios.get(`http://localhost:3000/api/v1/auth/refresh/${state?.user?.ID}`);
+			const { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/v1/auth/refresh/${state?.user?.ID}`);
 			removeCookie('accessToken');
 			setCookie('accessToken', data.accessToken, {
 				path: '/',

@@ -25,7 +25,7 @@ function Message(): JSX.Element {
 	 * Get request to retrieve all messages for the current chat.
 	 */
 	function fetchChat() {
-		return axios(`http://localhost:3000/api/v1/chats/${chatID}`, {
+		return axios(`${process.env.REACT_APP_API_URL}/api/v1/chats/${chatID}`, {
 			headers: {
 				Authorization: `Bearer ${accessToken?.token}`,
 			},
@@ -39,7 +39,7 @@ function Message(): JSX.Element {
 	 * Fetch messages for the current chat.
 	 */
 	function fetchMessages() {
-		return axios(`http://localhost:3000/api/v1/messages/${chatID}`, {
+		return axios(`${process.env.REACT_APP_API_URL}/api/v1/messages/${chatID}`, {
 			headers: {
 				Authorization: `Bearer ${accessToken?.token}`,
 			},
@@ -62,7 +62,7 @@ function Message(): JSX.Element {
 			return Promise.reject('Cannot send empty message');
 		}
 
-		return axios(`http://localhost:3000/api/v1/messages/${chatID}`, {
+		return axios(`${process.env.REACT_APP_API_URL}/api/v1/messages/${chatID}`, {
 			method: 'POST',
 			data: { message: value },
 			headers: {

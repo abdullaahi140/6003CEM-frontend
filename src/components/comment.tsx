@@ -31,7 +31,7 @@ function MessageComment(props: Props): JSX.Element {
 	 * Delete a message from a chat.
 	 */
 	function deleteMessage() {
-		return axios(`http://localhost:3000/api/v1/messages/${ID}`, {
+		return axios(`${process.env.REACT_APP_API_URL}/api/v1/messages/${ID}`, {
 			method: 'DELETE',
 			headers: {
 				Authorization: `Bearer ${accessToken?.token}`,

@@ -12,7 +12,7 @@ function Favourite(): JSX.Element {
 	const { state: { accessToken } } = useAuthentication();
 
 	function fetchFavDogs() {
-		return axios('http://localhost:3000/api/v1/dogs/favs', {
+		return axios(`${process.env.REACT_APP_API_URL}/api/v1/dogs/favs`, {
 			headers: {
 				Authorization: `Bearer ${accessToken?.token}`,
 			},

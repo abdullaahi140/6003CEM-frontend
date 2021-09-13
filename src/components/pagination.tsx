@@ -20,7 +20,7 @@ function Page(props: Props): JSX.Element {
 	/** Function that fetches the number of dogs depending on search terms */
 	function fetchCount(param: Omit<Props, 'onChange' | 'page'>) {
 		return axios(
-			`http://localhost:3000/api/v1/dogs/count?name=${param.name}&breed=${param.breed}`,
+			`${process.env.REACT_APP_API_URL}/api/v1/dogs/count?name=${param.name}&breed=${param.breed}`,
 		)
 			.then((response) => response.data)
 			.catch((err) => console.error(err, 'Error fetching dog count'));

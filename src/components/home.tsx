@@ -43,7 +43,7 @@ function Home(): JSX.Element {
 	 */
 	function fetchDogs(param: QueryParams) {
 		return axios(
-			`http://localhost:3000/api/v1/dogs?page=${param.page}&name=${param.name}&breed=${param.breed}`,
+			`${process.env.REACT_APP_API_URL}/api/v1/dogs?page=${param.page}&name=${param.name}&breed=${param.breed}`,
 		)
 			.then((response) => response.data)
 			.catch((err) => console.error(err, 'Error fetching all dogs'));

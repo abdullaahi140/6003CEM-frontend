@@ -28,7 +28,7 @@ function Chat(): JSX.Element {
 	 */
 	function fetchChats() {
 		const { role, locationID } = { ...user };
-		let url = 'http://localhost:3000/api/v1/chats';
+		let url = `${process.env.REACT_APP_API_URL}/api/v1/chats`;
 		if (role !== 'user') {
 			url = `${url}/location/${locationID}`;
 		}
@@ -46,7 +46,7 @@ function Chat(): JSX.Element {
 	 * Fetch list of shelters that the user hasn't started a chat with.
 	 */
 	function fetchShelters() {
-		return axios('http://localhost:3000/api/v1/locations', {
+		return axios(`${process.env.REACT_APP_API_URL}/api/v1/locations`, {
 			headers: {
 				Authorization: `Bearer ${accessToken?.token}`,
 			},
@@ -60,7 +60,7 @@ function Chat(): JSX.Element {
 	 * Post a request to start a new chat with a shelter
 	 */
 	function postChat({ shelter }: QueryParam) {
-		return axios(`http://localhost:3000/api/v1/chats/${shelter}`, {
+		return axios(`${process.env.REACT_APP_API_URL}/api/v1/chats/${shelter}`, {
 			method: 'POST',
 			headers: {
 				Authorization: `Bearer ${accessToken?.token}`,

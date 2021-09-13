@@ -59,7 +59,7 @@ function RegistrationForm(): JSX.Element {
 	 */
 	function postUser(values: UserBody) {
 		const { confirm: _confirm, ...data } = values;
-		return axios('http://localhost:3000/api/v1/users', {
+		return axios(`${process.env.REACT_APP_API_URL}/api/v1/users`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'multipart/form-data',

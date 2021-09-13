@@ -47,7 +47,7 @@ function DogCard(props: Props): JSX.Element {
 	 * Handler function that deletes a dog.
 	 */
 	function postDeleteDog({ ID: dogID }: { ID: number }) {
-		return axios(`http://localhost:3000/api/v1/dogs/${dogID}`, {
+		return axios(`${process.env.REACT_APP_API_URL}/api/v1/dogs/${dogID}`, {
 			method: 'DELETE',
 			headers: {
 				Authorization: `Bearer ${accessToken?.token}`,

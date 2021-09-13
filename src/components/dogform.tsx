@@ -52,7 +52,7 @@ function DogForm(): JSX.Element {
 	 * Fetch a dog to populate their details in the form.
 	 */
 	function fetchDog() {
-		return axios(`http://localhost:3000/api/v1/dogs/${dogID}`)
+		return axios(`${process.env.REACT_APP_API_URL}/api/v1/dogs/${dogID}`)
 			.then((response) => response.data);
 	}
 
@@ -65,7 +65,7 @@ function DogForm(): JSX.Element {
 	 * Fetches the staff's shelter to set name as the header.
 	 */
 	function fetchShelter() {
-		return axios(`http://localhost:3000/api/v1/locations/${user?.locationID}`, {
+		return axios(`${process.env.REACT_APP_API_URL}/api/v1/locations/${user?.locationID}`, {
 			headers: {
 				Authorization: `Bearer ${accessToken?.token}`,
 			},
@@ -93,7 +93,7 @@ function DogForm(): JSX.Element {
 	 * @param {Object} values - Values for field in the submitted form
 	 */
 	function postOrPutDog(values: DogBody) {
-		let url = 'http://localhost:3000/api/v1/dogs';
+		let url = `${process.env.REACT_APP_API_URL}/api/v1/dogs`;
 		url = (dogID) ? `${url}/${dogID}` : url;
 		return axios(url, {
 			method: (dogID) ? 'PUT' : 'POST',

@@ -21,7 +21,7 @@ function SearchBar(props: Props): JSX.Element {
 	 * Fetch the list of breeds of dogs currently in a shelter.
 	 */
 	function fetchBreeds() {
-		return axios('http://localhost:3000/api/v1/dogs/breeds')
+		return axios(`${process.env.REACT_APP_API_URL}/api/v1/dogs/breeds`)
 			.then((response) => response.data)
 			.catch((err) => console.error(err, 'Error fetching breeds'));
 	}

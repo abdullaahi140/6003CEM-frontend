@@ -18,7 +18,7 @@ function DogView(): JSX.Element {
 	 * Fetch dog using ID from URL parameter.
 	 */
 	function fetchDog() {
-		return axios(`http://localhost:3000/api/v1/dogs/${dogID}`)
+		return axios(`${process.env.REACT_APP_API_URL}/api/v1/dogs/${dogID}`)
 			.then((response) => response.data)
 			.catch((err) => console.error(err, `Error fetching single dog ID ${dogID}`));
 	}

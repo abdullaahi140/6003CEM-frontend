@@ -34,7 +34,7 @@ function useLoginUser(): UseMutationResult<UserResponse, AxiosError, Credentials
 	 * Post the login request using values from the form
 	 * */
 	function loginUser({ username, password }: Credentials) {
-		return axios('http://localhost:3000/api/v1/auth/login', {
+		return axios(`${process.env.REACT_APP_API_URL}/api/v1/auth/login`, {
 			method: 'POST',
 			headers: {
 				Authorization: `Basic ${btoa(`${username}:${password}`)}`,

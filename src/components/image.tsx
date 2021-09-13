@@ -20,7 +20,7 @@ function Image(props: ImageProps): JSX.Element {
 	} = props;
 
 	function fetchImage(imageID: number) {
-		return axios(`http://localhost:3000/api/v1/images/${imageID}`, {
+		return axios(`${process.env.REACT_APP_API_URL}/api/v1/images/${imageID}`, {
 			responseType: 'blob',
 		}).then((response) => URL.createObjectURL(response.data));
 	}

@@ -22,7 +22,7 @@ function FavIcon({ dogID }: { dogID: number }): JSX.Element {
 	 * @param {string} method - HTTP method for request (POST, DELETE e.g.)
 	 */
 	function fetchFav() {
-		return axios(`http://localhost:3000/api/v1/dogs/favs/${dogID}`, {
+		return axios(`${process.env.REACT_APP_API_URL}/api/v1/dogs/favs/${dogID}`, {
 			method: 'GET',
 			headers: {
 				Authorization: `Bearer ${accessToken?.token}`,
@@ -36,7 +36,7 @@ function FavIcon({ dogID }: { dogID: number }): JSX.Element {
 	});
 
 	function postOrDelFav({ method }: Param) {
-		return axios(`http://localhost:3000/api/v1/dogs/favs/${dogID}`, {
+		return axios(`${process.env.REACT_APP_API_URL}/api/v1/dogs/favs/${dogID}`, {
 			method,
 			headers: {
 				Authorization: `Bearer ${accessToken?.token}`,

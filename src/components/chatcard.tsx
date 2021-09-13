@@ -27,7 +27,7 @@ function ChatCard(props: Props): JSX.Element {
 	 * Delete a chat then update the list of chats.
 	 */
 	function deleteChat() {
-		return axios(`http://localhost:3000/api/v1/chats/${chatID}`, {
+		return axios(`${process.env.REACT_APP_API_URL}/api/v1/chats/${chatID}`, {
 			method: 'DELETE',
 			headers: {
 				Authorization: `Bearer ${accessToken?.token}`,
