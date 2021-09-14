@@ -65,23 +65,23 @@ function Nav(): JSX.Element {
 
 		if (!loggedIn) {
 			loginNav = (
-				<>
+				[
 					<Menu.Item key="5" style={{ float: 'right' }}>
 						<Link to="/register">Register</Link>
-					</Menu.Item>
+					</Menu.Item>,
 					<Menu.Item key="6" style={{ float: 'right' }}>
 						<Link to="/login">Login</Link>
-					</Menu.Item>
-				</>
+					</Menu.Item>,
+				]
 			);
 		} else {
-			loginNav = (
+			loginNav = [
 				<Menu.Item key="5" onClick={() => mutate()} style={{ float: 'right' }}>
 					Logout
 				</Menu.Item>
-			);
+			];
 		}
-		return [dogNav, loginNav];
+		return [dogNav, ...loginNav];
 	}
 
 	return (
