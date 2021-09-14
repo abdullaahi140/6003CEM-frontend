@@ -78,7 +78,7 @@ function Nav(): JSX.Element {
 			loginNav = [
 				<Menu.Item key="5" onClick={() => mutate()} style={{ float: 'right' }}>
 					Logout
-				</Menu.Item>
+				</Menu.Item>,
 			];
 		}
 		return [dogNav, ...loginNav];
