@@ -28,7 +28,7 @@ function DogView(): JSX.Element {
 	return (
 		<Spin spinning={isLoading} size="large">
 			{isSuccess && (
-				<div style={{ padding: '0% 10% 1%', background: 'white' }}>
+				<div style={{ padding: '0% 5% 1%', background: 'white' }}>
 					<PageHeader
 						className="site-page-header"
 						title={`About ${data.name}`}
